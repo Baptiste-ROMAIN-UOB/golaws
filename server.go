@@ -50,6 +50,7 @@ func getAvailableWorker() (*Worker, error) {
 }
 
 // Fonction qui calcule l'état suivant du tableau sur un worker
+// Fonction qui calcule l'état suivant du tableau sur un worker
 func (e *Engine) CalculateNextState(req SegmentRequest, res *[][]byte) error {
 	// Débogage : afficher les détails de la requête
 	fmt.Printf("[DEBUG] Demande de calcul pour la plage [%d-%d]\n", req.Start, req.End)
@@ -63,8 +64,8 @@ func (e *Engine) CalculateNextState(req SegmentRequest, res *[][]byte) error {
 	// Débogage : afficher le worker utilisé pour la tâche
 	fmt.Printf("[DEBUG] Envoi de la requête au worker : %v\n", worker.Client)
 
-	// Envoi de la requête de calcul au worker
-	err = worker.Client.Call("Worker.Calculate", req, res)
+	// Envoi de la requête de calcul au worker (ici on appelle la méthode correcte)
+	err = worker.Client.Call("Worker.CalculateNextState", req, res)  // Appel à la méthode correcte
 	if err != nil {
 		return fmt.Errorf("Erreur lors de l'appel RPC au worker : %v", err)
 	}
@@ -73,6 +74,7 @@ func (e *Engine) CalculateNextState(req SegmentRequest, res *[][]byte) error {
 	fmt.Printf("[DEBUG] Calcul terminé pour la plage [%d-%d]\n", req.Start, req.End)
 	return nil
 }
+
 
 // Fonction pour enregistrer un worker auprès du serveur
 func (e *Engine) RegisterWorker(workerAddr string, res *bool) error {
