@@ -7,6 +7,7 @@ import (
 	"sync"
 )
 
+// Structure pour représenter un worker
 type Worker struct {
 	Client *rpc.Client
 }
@@ -92,6 +93,28 @@ func (e *Engine) RegisterWorker(workerAddr string, res *bool) error {
 	// Débogage : confirmation d'enregistrement
 	*res = true
 	fmt.Printf("[DEBUG] Worker enregistré : %s\n", workerAddr)
+	return nil
+}
+
+// Fonction pour accepter un client et l'ajouter à la liste des workers
+func (e *Engine) AcceptClient(workerAddr string, res *bool) error {
+	// Tentative de connexion au worker
+	fmt.Printf("[DEBUG] Acceptation du worker à l'adresse : %s\n", workerAddr)
+
+	// Créer un client RPC pour le worker
+	client, err := rpc.Dial("tcp", workerAddr)
+	if err != nil {
+		return fmt.Errorf("Erreur lors de la connexion au worker : %v", err)
+	}
+
+	// Enregistrer le worker dans la liste
+	workerMutex.Lock()
+	workers = append(workers, &Worker{Client: client})
+	workerMutex.Unlock()
+
+	// Débogage : confirmation d'enregistrement
+	*res = true
+	fmt.Printf("[DEBUG] Worker accepté et enregistré : %s\n", workerAddr)
 	return nil
 }
 
