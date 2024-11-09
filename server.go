@@ -6,7 +6,7 @@ import (
 	"net"
 	"net/rpc"
 	"os"
-	"time"
+	//"time"
 )
 
 // Paramètres pour la grille de jeu de la vie
