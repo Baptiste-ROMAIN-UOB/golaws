@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/rpc"
 	"sync"
+	"log"
 )
 
 // Structure pour représenter un worker
