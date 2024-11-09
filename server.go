@@ -66,7 +66,6 @@ func (e *Engine) State(req SegmentRequest, res *SegmentResponse) error {
 }
 
 // Nouvelle méthode CalculateNextState
-// Divise la grille en plusieurs segments et demande à chaque worker de calculer un segment
 func (e *Engine) CalculateNextState(req SegmentRequest, res *[][]byte) error {
     numWorkers := len(workers)
     if numWorkers == 0 {
@@ -122,11 +121,7 @@ func (e *Engine) CalculateNextState(req SegmentRequest, res *[][]byte) error {
         if i == numWorkers-1 {
             end = req.Params.Height
         }
-
-        // Copie les données du segment calculé dans la grille finale
-        for y := start; y < end; y++ {
-            result[y] = responses[i].NewSegment[y-start]
-        }
+        copy(result[start:end], responses[i].NewSegment)
     }
 
     *res = result
@@ -177,6 +172,7 @@ func startServer() {
             log.Println("Erreur lors de l'acceptation de connexion : ", err)
             continue
         }
+        fmt.Printf("[DEBUG] Connexion acceptée depuis : %v\n", conn.RemoteAddr())
         go rpc.ServeConn(conn)
     }
 }
