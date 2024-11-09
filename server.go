@@ -37,12 +37,6 @@ func getAvailableWorker() (*Worker, error) {
 	workerMutex.Lock()
 	defer workerMutex.Unlock()
 
-	// Débogage : afficher les workers disponibles
-	fmt.Printf("[DEBUG] Nombre de workers enregistrés : %d\n", len(workers))
-	for i, worker := range workers {
-		fmt.Printf("[DEBUG] Worker %d : %v\n", i, worker.Client)
-	}
-
 	// Cherche un worker qui est enregistré
 	if len(workers) > 0 {
 		return workers[0], nil
@@ -52,26 +46,18 @@ func getAvailableWorker() (*Worker, error) {
 
 // Fonction qui calcule l'état suivant du tableau sur un worker
 func (e *Engine) State(req SegmentRequest, res *[][]byte) error {
-	// Débogage : afficher les détails de la requête
-	fmt.Printf("[DEBUG] Demande de calcul pour la plage [%d-%d]\n", req.Start, req.End)
-
 	// Obtention d'un worker disponible
 	worker, err := getAvailableWorker()
 	if err != nil {
 		return fmt.Errorf("Erreur lors de l'obtention d'un worker : %v", err)
 	}
 
-	// Débogage : afficher le worker utilisé pour la tâche
-	fmt.Printf("[DEBUG] Envoi de la requête au worker : %v\n", worker.Client)
-
 	// Envoi de la requête de calcul au worker
-	err = worker.Client.Call("Worker.State", req, res)  // Appel à la méthode "State"
+	err = worker.Client.Call("Worker.State", req, res)
 	if err != nil {
 		return fmt.Errorf("Erreur lors de l'appel RPC au worker : %v", err)
 	}
 
-	// Débogage : tâche terminée
-	fmt.Printf("[DEBUG] Calcul terminé pour la plage [%d-%d]\n", req.Start, req.End)
 	return nil
 }
 
@@ -104,7 +90,7 @@ func startServer() {
 	engine := new(Engine)
 	rpc.Register(engine)
 
-	// Débogage : démarrage du serveur
+	// Démarrage du serveur
 	fmt.Println("[DEBUG] Démarrage du serveur RPC sur le port 8080")
 
 	listener, err := net.Listen("tcp", ":8080")
