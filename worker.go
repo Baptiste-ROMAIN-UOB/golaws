@@ -120,15 +120,15 @@ func startWorkerServer(port string) {
 }
 
 func main() {
-	if len(os.Args) < 4 {
-		fmt.Println("Usage: go run worker.go <workerPort> <serverIP> <serverPort>")
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: go run worker.go <workerPort> <serverIP>")
 		os.Exit(1)
 	}
-	workerPort := os.Args[1]
-	serverIP := os.Args[2]
-	serverPort := os.Args[3]
+	workerPort := os.Args[1] // Port du worker
+	serverIP := os.Args[2]   // Adresse du serveur
 
-	// Adresse du serveur et du worker pour l'enregistrement
+	// On suppose que le serveur écoute sur le port 8080
+	serverPort := "8080"
 	serverAddr := net.JoinHostPort(serverIP, serverPort)
 	workerAddr := "localhost:" + workerPort
 
@@ -145,4 +145,3 @@ func main() {
 	// Démarrer le serveur RPC du worker
 	startWorkerServer(workerPort)
 }
-//go run worker.go 8081 127.0.0.1 8080
