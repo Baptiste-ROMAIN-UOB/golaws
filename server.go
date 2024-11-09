@@ -65,7 +65,7 @@ func (e *Engine) CalculateNextState(req SegmentRequest, res *[][]byte) error {
 	fmt.Printf("[DEBUG] Envoi de la requête au worker : %v\n", worker.Client)
 
 	// Envoi de la requête de calcul au worker (ici on appelle la méthode correcte)
-	err = worker.Client.Call("Worker.CalculateNextState", req, res)  // Appel à la méthode correcte
+	err = worker.Client.Call("worker.CalculateNextState", req, res)  // Appel à la méthode correcte
 	if err != nil {
 		return fmt.Errorf("Erreur lors de l'appel RPC au worker : %v", err)
 	}
@@ -123,8 +123,10 @@ func (e *Engine) AcceptClient(workerAddr string, res *bool) error {
 // Fonction pour démarrer le serveur
 func startServer(port string) {
 	engine := new(Engine)
-	rpc.Register(engine)
-
+	err := rpc.Register(engine)
+	if err != nil {
+	    log.Fatalf("Erreur lors de l'enregistrement du service RPC : %v", err)
+	}
 	// Débogage : affichage du démarrage du serveur
 	fmt.Printf("[DEBUG] Démarrage du serveur sur le port %s...\n", port)
 
