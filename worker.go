@@ -31,6 +31,11 @@ type SegmentResponse struct {
 // Worker représente la structure principale du worker
 type Worker struct{}
 
+func (w *Worker) Ping(request bool, response *bool) error {
+	*response = true
+	return nil
+}
+
 // Fonction pour compter les voisins vivants autour d’une cellule
 func countAliveNeighbors(world [][]byte, x, y int) int {
 	aliveCount := 0
