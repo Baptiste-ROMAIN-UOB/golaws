@@ -9,9 +9,10 @@ import (
 )
 
 type Worker struct {
-	Client *rpc.Client
-	Active bool
-	LastPing time.Time
+	Client    *rpc.Client
+	State     string        // "active", "inactive", "error"
+	LastPing  time.Time
+	FailCount int           // Compteur d'échecs
 }
 
 var (
@@ -39,13 +40,13 @@ func getAvailableWorker() (*Worker, error) {
 	workerMutex.Lock()
 	defer workerMutex.Unlock()
 
-	// Cherche un worker actif
+	// Cherche un worker inactif
 	for _, worker := range workers {
-		if worker.Active {
+		if worker.State == "inactive" {
 			return worker, nil
 		}
 	}
-	return nil, fmt.Errorf("Aucun worker actif disponible")
+	return nil, fmt.Errorf("Aucun worker inactif disponible")
 }
 
 // Fonction qui calcule l'état suivant du tableau sur un worker
@@ -56,12 +57,23 @@ func (e *Engine) CalculateNextState(req SegmentRequest, res *[][]byte) error {
 		return fmt.Errorf("Erreur lors de l'obtention d'un worker : %v", err)
 	}
 
+	// Marquer le worker comme actif (en cours d'exécution)
+	worker.State = "active"
+
 	// Envoi de la requête de calcul au worker
 	err = worker.Client.Call("Worker.Calculate", req, res)
 	if err != nil {
-		worker.Active = false // Marquer le worker comme inactif s'il échoue
+		worker.State = "error" // Marquer le worker comme cassé en cas d'erreur
+		worker.FailCount++
+		if worker.FailCount >= 3 { // Après plusieurs échecs, on marque le worker comme cassé
+			worker.State = "error"
+		}
 		return fmt.Errorf("Erreur lors de l'appel RPC au worker : %v", err)
 	}
+
+	// Une fois le travail terminé, marquer le worker comme inactif (libre)
+	worker.State = "inactive"
+	worker.FailCount = 0 // Réinitialiser le compteur d'échecs
 	return nil
 }
 
@@ -73,9 +85,9 @@ func (e *Engine) RegisterWorker(workerAddr string, res *bool) error {
 		return fmt.Errorf("Erreur lors de la connexion au worker : %v", err)
 	}
 
-	// Enregistrer le worker dans la liste comme actif
+	// Enregistrer le worker dans la liste comme inactif (prêt à recevoir des tâches)
 	workerMutex.Lock()
-	workers = append(workers, &Worker{Client: client, Active: true, LastPing: time.Now()})
+	workers = append(workers, &Worker{Client: client, State: "inactive", LastPing: time.Now()})
 	workerMutex.Unlock()
 
 	*res = true
@@ -89,13 +101,13 @@ func (e *Engine) MonitorWorkers() {
 		time.Sleep(5 * time.Second)
 		workerMutex.Lock()
 		for _, worker := range workers {
-			if worker.Active {
+			if worker.State != "error" { // Ne pas vérifier les workers cassés
 				var pingRes bool
 				err := worker.Client.Call("Worker.Ping", true, &pingRes)
 				if err != nil || !pingRes {
-					// Marquer le worker comme inactif s'il ne répond pas
-					fmt.Println("Worker inactif détecté :", worker.Client)
-					worker.Active = false
+					// Marquer le worker comme en erreur s'il ne répond pas
+					fmt.Println("Worker en erreur détecté :", worker.Client)
+					worker.State = "error"
 				} else {
 					// Mettre à jour l'horodatage du dernier ping réussi
 					worker.LastPing = time.Now()
