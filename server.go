@@ -66,7 +66,7 @@ func (e *Engine) CalculateNextState(req SegmentRequest, res *[][]byte) error {
 	fmt.Printf("[DEBUG] Envoi de la requête au worker : %v\n", worker.Client)
 
 	// Envoi de la requête de calcul au worker (ici on appelle la méthode correcte)
-	err = worker.Client.Call("worker.CalculateNextState", req, res)  // Appel à la méthode correcte
+	err = worker.Client.Call("Worker.CalculateNextState", req, res)  // Appel à la méthode correcte
 	if err != nil {
 		return fmt.Errorf("Erreur lors de l'appel RPC au worker : %v", err)
 	}
