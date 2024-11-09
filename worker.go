@@ -132,6 +132,7 @@ func registerWithServer(serverAddr string, workerAddr string) error {
 func startWorkerServer(port string) {
     worker := new(Worker)
     rpc.Register(worker)
+    rpc.RegisterName("Worker", worker) // Enregistrement explicite du service Worker
 
     // Débogage : démarrage du serveur RPC
     fmt.Printf("[DEBUG] Démarrage du serveur RPC du worker sur le port %s\n", port)
