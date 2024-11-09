@@ -5,17 +5,19 @@ import (
     "log"
     "net"
     "net/rpc"
-    "os"
-    "time"
+    "sync"
 )
 
-// Paramètres pour la grille de jeu de la vie
-type Params struct {
-    Width  int
-    Height int
+// Structure pour représenter un worker
+type Worker struct {
+    Client *rpc.Client
 }
 
-// Structure de la requête pour un calcul segmenté
+var (
+    workers     = make([]*Worker, 0) // Liste des workers
+    workerMutex sync.Mutex           // Mutex pour garantir un accès sécurisé aux workers
+)
+
 type SegmentRequest struct {
     Start  int
     End    int
@@ -23,157 +25,163 @@ type SegmentRequest struct {
     Params Params
 }
 
-// Structure de réponse pour le calcul d'un segment
 type SegmentResponse struct {
     NewSegment [][]byte
 }
 
-// Worker représente la structure principale du worker
-type Worker struct{}
-
-
-// Fonction pour compter les voisins vivants autour d’une cellule
-func countAliveNeighbors(world [][]byte, x, y int) int {
-    aliveCount := 0
-    directions := []struct{ dx, dy int }{
-        {-1, -1}, {-1, 0}, {-1, 1},
-        {0, -1}, {0, 1},
-        {1, -1}, {1, 0}, {1, 1},
-    }
-
-    for _, dir := range directions {
-        neighborX := (x + dir.dx + len(world[0])) % len(world[0])
-        neighborY := (y + dir.dy + len(world)) % len(world)
-        if world[neighborY][neighborX] == 255 {
-            aliveCount++
-        }
-    }
-    return aliveCount
+type Params struct {
+    Width  int
+    Height int
 }
 
-// Fonction pour calculer l’état suivant pour un segment
-func (w *Worker) State(req SegmentRequest, res *SegmentResponse) error {
-    // Débogage : afficher les détails de la requête
-    fmt.Printf("[DEBUG] Calcul de l'état suivant pour le segment [%d-%d] de la grille de %d x %d\n", req.Start, req.End, req.Params.Width, req.Params.Height)
+type Engine struct{}
 
-    newSegment := make([][]byte, req.End-req.Start)
-    for i := range newSegment {
-        newSegment[i] = make([]byte, req.Params.Width)
+// Fonction pour attribuer un travail à un worker disponible
+func getAvailableWorker() (*Worker, error) {
+    workerMutex.Lock()
+    defer workerMutex.Unlock()
+
+    // Cherche un worker qui est enregistré
+    if len(workers) > 0 {
+        return workers[0], nil
+    }
+    return nil, fmt.Errorf("Aucun worker disponible")
+}
+
+// Fonction qui calcule l'état suivant du tableau sur un worker
+func (e *Engine) State(req SegmentRequest, res *SegmentResponse) error {
+    // Obtention d'un worker disponible
+    worker, err := getAvailableWorker()
+    if err != nil {
+        return fmt.Errorf("Erreur lors de l'obtention d'un worker : %v", err)
     }
 
-    // Calcul de l'état suivant pour chaque cellule du segment
-    for y := req.Start; y < req.End; y++ {
-        for x := 0; x < req.Params.Width; x++ {
-            aliveNeighbors := countAliveNeighbors(req.World, x, y)
-            if req.World[y][x] == 255 {
-                if aliveNeighbors == 2 || aliveNeighbors == 3 {
-                    newSegment[y-req.Start][x] = 255
-                } else {
-                    newSegment[y-req.Start][x] = 0
-                }
-            } else {
-                if aliveNeighbors == 3 {
-                    newSegment[y-req.Start][x] = 255
-                } else {
-                    newSegment[y-req.Start][x] = 0
-                }
-            }
-        }
+    // Envoi de la requête de calcul au worker
+    err = worker.Client.Call("Worker.State", req, res)
+    if err != nil {
+        return fmt.Errorf("Erreur lors de l'appel RPC au worker : %v", err)
     }
 
-    // Débogage : afficher les résultats du calcul
-    fmt.Printf("[DEBUG] Calcul terminé pour le segment [%d-%d], nouvelles cellules vivantes : %d\n", req.Start, req.End, countAliveCells(newSegment))
-
-    res.NewSegment = newSegment
     return nil
 }
 
-// Fonction pour compter le nombre de cellules vivantes dans un segment
-func countAliveCells(segment [][]byte) int {
-    count := 0
-    for _, row := range segment {
-        for _, cell := range row {
-            if cell == 255 {
-                count++
+// Nouvelle méthode CalculateNextState
+// Divise la grille en plusieurs segments et demande à chaque worker de calculer un segment
+func (e *Engine) CalculateNextState(req SegmentRequest, res *[][]byte) error {
+    numWorkers := len(workers)
+    if numWorkers == 0 {
+        return fmt.Errorf("Aucun worker disponible pour calculer l'état suivant")
+    }
+
+    // Découper la grille en segments
+    segmentHeight := req.Params.Height / numWorkers
+    responses := make([]*SegmentResponse, numWorkers)
+    var wg sync.WaitGroup
+    wg.Add(numWorkers)
+
+    // Envoi des requêtes aux workers
+    for i := 0; i < numWorkers; i++ {
+        start := i * segmentHeight
+        end := (i + 1) * segmentHeight
+        if i == numWorkers-1 {
+            // Le dernier worker prend la fin du tableau
+            end = req.Params.Height
+        }
+
+        segmentReq := SegmentRequest{
+            Start:  start,
+            End:    end,
+            World:  req.World,
+            Params: req.Params,
+        }
+
+        go func(i int, segmentReq SegmentRequest) {
+            defer wg.Done()
+
+            // Calculer l'état suivant pour ce segment
+            var response SegmentResponse
+            err := e.State(segmentReq, &response)
+            if err != nil {
+                log.Printf("[ERROR] Erreur lors du calcul de l'état pour le segment %d-%d: %v", segmentReq.Start, segmentReq.End, err)
+                return
             }
+
+            responses[i] = &response
+        }(i, segmentReq)
+    }
+
+    // Attendre que tous les workers aient terminé
+    wg.Wait()
+
+    // Combiner les résultats des workers
+    // Construire la grille complète en combinant les segments calculés
+    result := make([][]byte, req.Params.Height)
+    for i := 0; i < numWorkers; i++ {
+        start := i * segmentHeight
+        end := (i + 1) * segmentHeight
+        if i == numWorkers-1 {
+            end = req.Params.Height
+        }
+
+        // Copie les données du segment calculé dans la grille finale
+        for y := start; y < end; y++ {
+            result[y] = responses[i].NewSegment[y-start]
         }
     }
-    return count
-}
 
-// Fonction pour s’enregistrer auprès du serveur
-func registerWithServer(serverAddr string, workerAddr string) error {
-    // Débogage : tentative d'enregistrement du worker
-    fmt.Printf("[DEBUG] Tentative d'enregistrement du worker à l'adresse %s\n", workerAddr)
-
-    client, err := rpc.Dial("tcp", serverAddr)
-    if err != nil {
-        return fmt.Errorf("Erreur de connexion au serveur : %v", err)
-    }
-    defer client.Close()
-
-    var success bool
-    err = client.Call("Engine.RegisterWorker", workerAddr, &success)
-    if err != nil || !success {
-        return fmt.Errorf("Erreur d'enregistrement du worker : %v", err)
-    }
-
-    // Débogage : confirmation de l'enregistrement
-    fmt.Println("[DEBUG] Worker enregistré avec succès :", workerAddr)
+    *res = result
     return nil
 }
 
-// Fonction pour démarrer le listener RPC du worker
-func startWorkerServer(port string) {
-    worker := new(Worker)
-    rpc.Register(worker)
+// Fonction pour enregistrer un worker auprès du serveur
+func (e *Engine) RegisterWorker(workerAddr string, success *bool) error {
+    worker := &Worker{
+        Client: nil,
+    }
 
-    // Débogage : démarrage du serveur RPC
-    fmt.Printf("[DEBUG] Démarrage du serveur RPC du worker sur le port %s\n", port)
-
-    listener, err := net.Listen("tcp", ":"+port)
+    // Tentative de connexion au worker
+    client, err := rpc.Dial("tcp", workerAddr)
     if err != nil {
-        log.Fatalf("Erreur lors du démarrage du worker : %v", err)
+        return fmt.Errorf("Erreur de connexion au worker : %v", err)
+    }
+
+    worker.Client = client
+
+    // Enregistrer le worker
+    workerMutex.Lock()
+    workers = append(workers, worker)
+    workerMutex.Unlock()
+
+    *success = true
+    fmt.Printf("[DEBUG] Worker enregistré : %s\n", workerAddr)
+    return nil
+}
+
+// Démarrer le serveur RPC
+func startServer() {
+    engine := new(Engine)
+    rpc.Register(engine)
+
+    // Démarrage du serveur
+    fmt.Println("[DEBUG] Démarrage du serveur RPC sur le port 8080")
+
+    listener, err := net.Listen("tcp", ":8080")
+    if err != nil {
+        log.Fatalf("Erreur lors du démarrage du serveur : %v", err)
     }
     defer listener.Close()
 
-    fmt.Println("Worker démarré sur le port", port)
     for {
         conn, err := listener.Accept()
         if err != nil {
             log.Println("Erreur lors de l'acceptation de connexion : ", err)
             continue
         }
-        // Débogage : nouvelle connexion acceptée
-        fmt.Printf("[DEBUG] Connexion acceptée depuis : %v\n", conn.RemoteAddr())
         go rpc.ServeConn(conn)
     }
 }
 
 func main() {
-    if len(os.Args) < 3 {
-        fmt.Println("Usage: go run worker.go <workerPort> <serverIP>")
-        os.Exit(1)
-    }
-    workerPort := os.Args[1] // Port du worker
-    serverIP := os.Args[2]   // Adresse du serveur
-
-    // On suppose que le serveur écoute sur le port 8080
-    serverPort := "8080"
-    serverAddr := net.JoinHostPort(serverIP, serverPort)
-    workerAddr := "localhost:" + workerPort
-
-    // Essayer de s’enregistrer auprès du serveur
-    for {
-        err := registerWithServer(serverAddr, workerAddr)
-        if err == nil {
-            break
-        }
-        // Débogage : attendre avant de réessayer l'enregistrement
-        fmt.Println("[DEBUG] Tentative de reconnexion dans 5 secondes...")
-        time.Sleep(5 * time.Second)
-    }
-
-    // Démarrer le serveur RPC du worker
-    startWorkerServer(workerPort)
+    // Démarrer le serveur
+    startServer()
 }
