@@ -6,6 +6,7 @@ import (
     "net"
     "net/rpc"
     "sync"
+    "time"
 )
 
 // Structure pour représenter un worker
@@ -102,7 +103,9 @@ func (e *Engine) CalculateNextState(req SegmentRequest, res *[][]byte) error {
             err := e.State(segmentReq, &response)
             if err != nil {
                 log.Printf("[ERROR] Erreur lors du calcul de l'état pour le segment %d-%d: %v", segmentReq.Start, segmentReq.End, err)
-                return
+                // Si un worker échoue, on peut essayer avec un autre worker ou calculer localement
+                // Dans ce cas, on calcule localement le segment
+                e.calculateSegmentLocally(segmentReq, &response)
             }
 
             responses[i] = &response
@@ -126,6 +129,56 @@ func (e *Engine) CalculateNextState(req SegmentRequest, res *[][]byte) error {
 
     *res = result
     return nil
+}
+
+// Fonction pour calculer un segment localement si aucun worker ne répond
+func (e *Engine) calculateSegmentLocally(req SegmentRequest, res *SegmentResponse) {
+    fmt.Printf("[DEBUG] Calcul local pour le segment [%d-%d]\n", req.Start, req.End)
+    newSegment := make([][]byte, req.End-req.Start)
+    for i := range newSegment {
+        newSegment[i] = make([]byte, req.Params.Width)
+    }
+
+    // Calcul de l'état suivant pour chaque cellule du segment
+    for y := req.Start; y < req.End; y++ {
+        for x := 0; x < req.Params.Width; x++ {
+            aliveNeighbors := countAliveNeighbors(req.World, x, y)
+            if req.World[y][x] == 255 {
+                if aliveNeighbors == 2 || aliveNeighbors == 3 {
+                    newSegment[y-req.Start][x] = 255
+                } else {
+                    newSegment[y-req.Start][x] = 0
+                }
+            } else {
+                if aliveNeighbors == 3 {
+                    newSegment[y-req.Start][x] = 255
+                } else {
+                    newSegment[y-req.Start][x] = 0
+                }
+            }
+        }
+    }
+
+    res.NewSegment = newSegment
+}
+
+// Fonction pour compter les voisins vivants autour d’une cellule
+func countAliveNeighbors(world [][]byte, x, y int) int {
+    aliveCount := 0
+    directions := []struct{ dx, dy int }{
+        {-1, -1}, {-1, 0}, {-1, 1},
+        {0, -1}, {0, 1},
+        {1, -1}, {1, 0}, {1, 1},
+    }
+
+    for _, dir := range directions {
+        neighborX := (x + dir.dx + len(world[0])) % len(world[0])
+        neighborY := (y + dir.dy + len(world)) % len(world)
+        if world[neighborY][neighborX] == 255 {
+            aliveCount++
+        }
+    }
+    return aliveCount
 }
 
 // Fonction pour enregistrer un worker auprès du serveur
