@@ -1,4 +1,4 @@
-package main
+package worker
 
 import (
 	"fmt"
@@ -57,7 +57,7 @@ func countAliveNeighbors(world [][]byte, x, y int) int {
 }
 
 // Fonction pour calculer l’état suivant pour un segment
-func (w *Worker) CalculateNextState(req SegmentRequest, res *SegmentResponse) error {
+func (w *Worker) State(req SegmentRequest, res *SegmentResponse) error {
 	// Débogage : afficher les détails de la requête
 	fmt.Printf("[DEBUG] Calcul de l'état suivant pour le segment [%d-%d] de la grille de %d x %d\n", req.Start, req.End, req.Params.Width, req.Params.Height)
 
