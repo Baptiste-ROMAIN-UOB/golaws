@@ -35,6 +35,12 @@ func getAvailableWorker() (*Worker, error) {
 	workerMutex.Lock()
 	defer workerMutex.Unlock()
 
+	// Débogage : afficher les workers disponibles
+	fmt.Printf("[DEBUG] Nombre de workers enregistrés : %d\n", len(workers))
+	for i, worker := range workers {
+		fmt.Printf("[DEBUG] Worker %d : %v\n", i, worker.Client)
+	}
+
 	// Cherche un worker qui est enregistré
 	if len(workers) > 0 {
 		return workers[0], nil
@@ -44,22 +50,34 @@ func getAvailableWorker() (*Worker, error) {
 
 // Fonction qui calcule l'état suivant du tableau sur un worker
 func (e *Engine) CalculateNextState(req SegmentRequest, res *[][]byte) error {
+	// Débogage : afficher les détails de la requête
+	fmt.Printf("[DEBUG] Demande de calcul pour la plage [%d-%d]\n", req.Start, req.End)
+
 	// Obtention d'un worker disponible
 	worker, err := getAvailableWorker()
 	if err != nil {
 		return fmt.Errorf("Erreur lors de l'obtention d'un worker : %v", err)
 	}
 
+	// Débogage : afficher le worker utilisé pour la tâche
+	fmt.Printf("[DEBUG] Envoi de la requête au worker : %v\n", worker.Client)
+
 	// Envoi de la requête de calcul au worker
 	err = worker.Client.Call("Worker.Calculate", req, res)
 	if err != nil {
 		return fmt.Errorf("Erreur lors de l'appel RPC au worker : %v", err)
 	}
+
+	// Débogage : tâche terminée
+	fmt.Printf("[DEBUG] Calcul terminé pour la plage [%d-%d]\n", req.Start, req.End)
 	return nil
 }
 
 // Fonction pour enregistrer un worker auprès du serveur
 func (e *Engine) RegisterWorker(workerAddr string, res *bool) error {
+	// Débogage : afficher l'adresse du worker
+	fmt.Printf("[DEBUG] Tentative de connexion au worker à l'adresse : %s\n", workerAddr)
+
 	// Créer un client RPC pour le worker
 	client, err := rpc.Dial("tcp", workerAddr)
 	if err != nil {
@@ -71,8 +89,9 @@ func (e *Engine) RegisterWorker(workerAddr string, res *bool) error {
 	workers = append(workers, &Worker{Client: client})
 	workerMutex.Unlock()
 
+	// Débogage : confirmation d'enregistrement
 	*res = true
-	fmt.Println("Worker enregistré :", workerAddr)
+	fmt.Printf("[DEBUG] Worker enregistré : %s\n", workerAddr)
 	return nil
 }
 
@@ -80,6 +99,9 @@ func (e *Engine) RegisterWorker(workerAddr string, res *bool) error {
 func startServer(port string) {
 	engine := new(Engine)
 	rpc.Register(engine)
+
+	// Débogage : affichage du démarrage du serveur
+	fmt.Printf("[DEBUG] Démarrage du serveur sur le port %s...\n", port)
 
 	// Écoute les connexions RPC sur le port spécifié
 	listener, err := net.Listen("tcp", ":"+port)
@@ -97,6 +119,11 @@ func startServer(port string) {
 			fmt.Println("Erreur lors de l'acceptation de la connexion : ", err)
 			continue
 		}
+
+		// Débogage : connexion acceptée
+		fmt.Printf("[DEBUG] Connexion acceptée : %v\n", conn.RemoteAddr())
+
+		// Traiter la connexion avec une goroutine
 		go rpc.ServeConn(conn)
 	}
 }

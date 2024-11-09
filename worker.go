@@ -31,6 +31,7 @@ type SegmentResponse struct {
 // Worker représente la structure principale du worker
 type Worker struct{}
 
+// Ping permet de vérifier la connexion avec le worker
 func (w *Worker) Ping(request bool, response *bool) error {
 	*response = true
 	return nil
@@ -57,11 +58,15 @@ func countAliveNeighbors(world [][]byte, x, y int) int {
 
 // Fonction pour calculer l’état suivant pour un segment
 func (w *Worker) CalculateNextState(req SegmentRequest, res *SegmentResponse) error {
+	// Débogage : afficher les détails de la requête
+	fmt.Printf("[DEBUG] Calcul de l'état suivant pour le segment [%d-%d] de la grille de %d x %d\n", req.Start, req.End, req.Params.Width, req.Params.Height)
+
 	newSegment := make([][]byte, req.End-req.Start)
 	for i := range newSegment {
 		newSegment[i] = make([]byte, req.Params.Width)
 	}
 
+	// Calcul de l'état suivant pour chaque cellule du segment
 	for y := req.Start; y < req.End; y++ {
 		for x := 0; x < req.Params.Width; x++ {
 			aliveNeighbors := countAliveNeighbors(req.World, x, y)
@@ -81,12 +86,31 @@ func (w *Worker) CalculateNextState(req SegmentRequest, res *SegmentResponse) er
 		}
 	}
 
+	// Débogage : afficher les résultats du calcul
+	fmt.Printf("[DEBUG] Calcul terminé pour le segment [%d-%d], nouvelles cellules vivantes : %d\n", req.Start, req.End, countAliveCells(newSegment))
+
 	res.NewSegment = newSegment
 	return nil
 }
 
+// Fonction pour compter le nombre de cellules vivantes dans un segment
+func countAliveCells(segment [][]byte) int {
+	count := 0
+	for _, row := range segment {
+		for _, cell := range row {
+			if cell == 255 {
+				count++
+			}
+		}
+	}
+	return count
+}
+
 // Fonction pour s’enregistrer auprès du serveur
 func registerWithServer(serverAddr string, workerAddr string) error {
+	// Débogage : tentative d'enregistrement du worker
+	fmt.Printf("[DEBUG] Tentative d'enregistrement du worker à l'adresse %s\n", workerAddr)
+
 	client, err := rpc.Dial("tcp", serverAddr)
 	if err != nil {
 		return fmt.Errorf("Erreur de connexion au serveur : %v", err)
@@ -98,7 +122,9 @@ func registerWithServer(serverAddr string, workerAddr string) error {
 	if err != nil || !success {
 		return fmt.Errorf("Erreur d'enregistrement du worker : %v", err)
 	}
-	fmt.Println("Worker enregistré avec succès :", workerAddr)
+
+	// Débogage : confirmation de l'enregistrement
+	fmt.Println("[DEBUG] Worker enregistré avec succès :", workerAddr)
 	return nil
 }
 
@@ -106,6 +132,9 @@ func registerWithServer(serverAddr string, workerAddr string) error {
 func startWorkerServer(port string) {
 	worker := new(Worker)
 	rpc.Register(worker)
+
+	// Débogage : démarrage du serveur RPC
+	fmt.Printf("[DEBUG] Démarrage du serveur RPC du worker sur le port %s\n", port)
 
 	listener, err := net.Listen("tcp", ":"+port)
 	if err != nil {
@@ -120,6 +149,8 @@ func startWorkerServer(port string) {
 			log.Println("Erreur lors de l'acceptation de connexion : ", err)
 			continue
 		}
+		// Débogage : nouvelle connexion acceptée
+		fmt.Printf("[DEBUG] Connexion acceptée depuis : %v\n", conn.RemoteAddr())
 		go rpc.ServeConn(conn)
 	}
 }
@@ -143,7 +174,8 @@ func main() {
 		if err == nil {
 			break
 		}
-		fmt.Println("Tentative de reconnexion dans 5 secondes...")
+		// Débogage : attendre avant de réessayer l'enregistrement
+		fmt.Println("[DEBUG] Tentative de reconnexion dans 5 secondes...")
 		time.Sleep(5 * time.Second)
 	}
 
