@@ -126,7 +126,6 @@ func registerWithServer(serverAddr string, workerAddr string) error {
     return nil
 }
 
-// Fonction pour démarrer le listener RPC du worker
 func startWorkerServer(port string) {
     worker := new(Worker)
     rpc.RegisterName("Worker", worker)
@@ -139,16 +138,8 @@ func startWorkerServer(port string) {
     }
     defer listener.Close()
 
-    fmt.Println("Worker démarré sur le port", port)
-    for {
-        conn, err := listener.Accept()
-        if err != nil {
-            log.Println("Erreur lors de l'acceptation de connexion : ", err)
-            continue
-        }
-        fmt.Printf("[DEBUG] Connexion acceptée depuis : %v\n", conn.RemoteAddr())
-        go rpc.ServeConn(conn)
-    }
+    fmt.Println("Worker en écoute sur le port", port)
+    rpc.Accept(listener) // Bloque et écoute continuellement pour les connexions RPC
 }
 
 func main() {
@@ -163,11 +154,6 @@ func main() {
     serverAddr := net.JoinHostPort(serverIP, serverPort)
     workerAddr := "localhost:" + workerPort
 
-
-
-    // Attendre quelques secondes pour s'assurer que le serveur est prêt
-    time.Sleep(2 * time.Second)
-
     // Essayer de s’enregistrer auprès du serveur
     for {
         err := registerWithServer(serverAddr, workerAddr)
@@ -177,6 +163,7 @@ func main() {
         fmt.Println("[DEBUG] Tentative de reconnexion dans 5 secondes...")
         time.Sleep(5 * time.Second)
     }
-       // Démarrer le serveur RPC du worker
-    go startWorkerServer(workerPort)
+
+    // Démarrer le serveur RPC du worker après l’enregistrement
+    startWorkerServer(workerPort) // Reste bloqué en écoute ici
 }
