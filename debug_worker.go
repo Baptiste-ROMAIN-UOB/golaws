@@ -1,3 +1,4 @@
+// worker.go
 package main
 
 import (
@@ -9,35 +10,35 @@ import (
 	"time"
 )
 
-// Params defines the parameters for the Game of Life grid
+// Params 包含游戏参数
 type Params struct {
-	Width  int // Grid width
-	Height int // Grid height
+	Width  int
+	Height int
 }
 
-// SegmentRequest represents a request for processing a segment of the grid
+// SegmentRequest 包含段计算请求信息
 type SegmentRequest struct {
-	Start  int      // Starting row of the segment
-	End    int      // Ending row of the segment
-	World  [][]byte // Segment data for the grid
-	Params Params   // Grid dimensions
+	Start  int
+	End    int
+	World  [][]byte
+	Params Params
 }
 
-// SegmentResponse holds the processed data for a grid segment
+// SegmentResponse 包含段计算响应信息
 type SegmentResponse struct {
-	NewSegment [][]byte // Processed segment of the grid
+	NewSegment [][]byte
 }
 
-// Worker is responsible for handling computation tasks
+// Worker 处理计算任务
 type Worker struct{}
 
-// Ping checks if the Worker is online
+// Ping 检查 Worker 是否在线
 func (w *Worker) Ping(request bool, response *bool) error {
 	*response = true
 	return nil
 }
 
-// countAliveNeighbors calculates the number of live neighbors around a cell
+// countAliveNeighbors 计算一个细胞周围的活细胞数量
 func countAliveNeighbors(world [][]byte, x, y int) int {
 	aliveCount := 0
 	directions := []struct{ dx, dy int }{
@@ -56,9 +57,9 @@ func countAliveNeighbors(world [][]byte, x, y int) int {
 	return aliveCount
 }
 
-// State calculates the next state for a segment of cells in the grid
+// State 计算细胞的新状态
 func (w *Worker) State(req SegmentRequest, res *SegmentResponse) error {
-	log.Printf("[DEBUG] Worker received computation request for segment [%d-%d], grid size: %dx%d", req.Start, req.End, req.Params.Width, req.Params.Height)
+	log.Printf("[调试] Worker 收到计算请求：段 [%d-%d]，网格大小：%dx%d", req.Start, req.End, req.Params.Width, req.Params.Height)
 
 	newSegment := make([][]byte, req.End-req.Start)
 	for i := range newSegment {
@@ -80,52 +81,52 @@ func (w *Worker) State(req SegmentRequest, res *SegmentResponse) error {
 		}
 	}
 
-	log.Printf("[DEBUG] Worker completed computation for segment [%d-%d]", req.Start, req.End)
+	log.Printf("[调试] Worker 完成段 [%d-%d] 的计算", req.Start, req.End)
 	res.NewSegment = newSegment
 	return nil
 }
 
-// registerWithServer attempts to register the Worker with the server
+// registerWithServer 尝试向服务器注册 Worker
 func registerWithServer(serverAddr, workerAddr string) error {
 	client, err := net.DialTimeout("tcp", serverAddr, 10*time.Second)
 	if err != nil {
-		return fmt.Errorf("failed to connect to server: %v", err)
+		return fmt.Errorf("连接服务器失败: %v", err)
 	}
 	defer client.Close()
 
 	rpcClient := rpc.NewClient(client)
 	var success bool
 	if err := rpcClient.Call("Engine.RegisterWorker", workerAddr, &success); err != nil || !success {
-		return fmt.Errorf("Worker registration failed: %v", err)
+		return fmt.Errorf("Worker 注册失败: %v", err)
 	}
-	log.Printf("[DEBUG] Worker successfully registered: %s", workerAddr)
+	log.Printf("[调试] Worker 注册成功：%s", workerAddr)
 	return nil
 }
 
-// startWorkerServer starts the Worker’s RPC server
+// startWorkerServer 启动 Worker 的 RPC 服务器
 func startWorkerServer(port string, worker *Worker) error {
 	if err := rpc.Register(worker); err != nil {
-		return fmt.Errorf("failed to register Worker: %v", err)
+		return fmt.Errorf("Worker 注册失败: %v", err)
 	}
 
 	listener, err := net.Listen("tcp", ":"+port)
 	if err != nil {
-		return fmt.Errorf("failed to start Worker listener: %v", err)
+		return fmt.Errorf("启动 Worker 监听失败: %v", err)
 	}
 	defer listener.Close()
 
-	log.Printf("Worker started, listening on port: %s", port)
+	log.Printf("Worker 已启动，监听端口：%s", port)
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			log.Printf("error accepting connection: %v", err)
+			log.Printf("接受连接时出错: %v", err)
 			continue
 		}
 		go rpc.ServeConn(conn)
 	}
 }
 
-// retryWithBackoff attempts to register with the server using exponential backoff
+// retryWithBackoff 尝试注册到服务器，带有指数退避
 func retryWithBackoff(serverAddr, workerAddr string) {
 	const maxRetries = 5
 	for i := 0; i < maxRetries; i++ {
@@ -133,15 +134,15 @@ func retryWithBackoff(serverAddr, workerAddr string) {
 			return
 		}
 		backoff := time.Duration(i+1) * 5 * time.Second
-		log.Printf("Registration failed, retrying in %v (%d/%d)", backoff, i+1, maxRetries)
+		log.Printf("注册失败，%v 后重试 (%d/%d)", backoff, i+1, maxRetries)
 		time.Sleep(backoff)
 	}
-	log.Fatalf("Registration failed, maximum retries reached")
+	log.Fatalf("注册失败，已达到最大重试次数")
 }
 
 func main() {
 	if len(os.Args) < 3 {
-		fmt.Println("Usage: go run worker.go <workerPort> <serverIP>")
+		fmt.Println("用法: go run worker.go <worker端口> <服务器IP>")
 		os.Exit(1)
 	}
 	workerPort := os.Args[1]
@@ -149,7 +150,7 @@ func main() {
 
 	localIP, err := getLocalIP()
 	if err != nil {
-		log.Fatalf("Failed to obtain local IP address: %v", err)
+		log.Fatalf("获取本机 IP 地址失败: %v", err)
 	}
 	workerAddr := net.JoinHostPort(localIP, workerPort)
 	serverAddr := net.JoinHostPort(serverIP, "8080")
@@ -157,7 +158,7 @@ func main() {
 	worker := new(Worker)
 	go func() {
 		if err := startWorkerServer(workerPort, worker); err != nil {
-			log.Fatalf("Failed to start Worker server: %v", err)
+			log.Fatalf("Worker 服务器启动失败: %v", err)
 		}
 	}()
 	retryWithBackoff(serverAddr, workerAddr)
@@ -165,7 +166,7 @@ func main() {
 	select {}
 }
 
-// getLocalIP retrieves the local non-loopback IP address
+// getLocalIP 获取本地非环回 IP 地址
 func getLocalIP() (string, error) {
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
