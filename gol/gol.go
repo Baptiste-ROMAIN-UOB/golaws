@@ -1,6 +1,6 @@
 package gol
 
-// Params provides the details of how to run the Game of Life and which image to load.
+// Params provides the configuration for running the Game of Life and which image to load.
 type Params struct {
 	Turns       int
 	Threads     int
@@ -8,27 +8,30 @@ type Params struct {
 	ImageHeight int
 }
 
-// ioCommand allows requesting behaviour from the io (pgm) goroutine.
+// ioCommand is an enumerated type representing various commands for I/O operations.
 type ioCommand uint8
 
-// This is a way of creating enums in Go.
+// Enumeration of possible I/O commands.
 const (
-	ioOutput ioCommand = iota
-	ioInput
-	ioCheckIdle
+	ioOutput ioCommand = iota  // Command to output data.
+	ioInput                    // Command to input data.
+	ioCheckIdle                // Command to check if I/O is idle.
 )
 
-// ioChannels holds all channels used for communication with the io goroutine.
+// ioChannels holds all channels used for communication with the I/O goroutine.
 type ioChannels struct {
-	command  chan ioCommand // 双向通道
-	idle     chan bool      // 双向通道
-	filename chan string    // 双向通道
-	output   chan uint8     // 双向通道
-	input    chan uint8     // 双向通道
+	command  chan ioCommand // Channel for I/O commands.
+	idle     chan bool      // Channel to signal if I/O is idle.
+	filename chan string    // Channel for filenames.
+	output   chan uint8     // Channel for output data.
+	input    chan uint8     // Channel for input data.
 }
 
-// Run starts the processing of Game of Life with distributed computation
-func Run(p Params, events chan<- Event, keyPresses <-chan rune) {
+// Run initiates the Game of Life processing with distributed computation.
+// p: Game parameters, events: Channel to send game events, keyPresses: Channel for key input commands,
+// engineAddress: Address of the engine for distributed computation.
+func Run(p Params, events chan<- Event, keyPresses <-chan rune, engineAddress string) {
+	// Initialize channels for I/O operations.
 	ioCommand := make(chan ioCommand)
 	ioIdle := make(chan bool)
 	ioFilename := make(chan string)
@@ -43,19 +46,23 @@ func Run(p Params, events chan<- Event, keyPresses <-chan rune) {
 		input:    ioInput,
 	}
 
+	// Channels required for the distributor's operations.
 	distributorChannels := distributorChannels{
 		events:    events,
 		ioCommand: ioCommand,
 		ioIdle:    ioIdle,
 	}
 
+	// Start the I/O goroutine with the provided parameters and channels.
 	go startIo(p, ioChannels)
 
-	// Start the distributor with all necessary channels
-	distributor(p, distributorChannels, ioInput, ioOutput, ioFilename, keyPresses)
+	// Start the distributor which handles the main game logic, using the provided channels and parameters.
+	distributor(p, distributorChannels, ioInput, ioOutput, ioFilename, keyPresses, engineAddress)
 }
 
-// NewParams creates a new set of parameters for the Game of Life
+// NewParams creates a new Params instance with the specified parameters.
+// turns: Number of game turns, threads: Number of threads for computation,
+// imageWidth: Width of the game image, imageHeight: Height of the game image.
 func NewParams(turns, threads, imageWidth, imageHeight int) Params {
 	return Params{
 		Turns:       turns,
