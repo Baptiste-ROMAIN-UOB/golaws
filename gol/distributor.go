@@ -216,120 +216,124 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 			isShutDown = true
 		}
 	}
-
-	mainLoop:
-		for turn < p.Turns {
-			select {
-			case <-ticker.C:
-				if isShutDown {
-					break mainLoop
-				}
-				alive := calculateAliveCells(p, world)
-				c.events <- AliveCellsCount{turn, len(alive)}
-
-			case key := <-keyPresses:
-				switch key {
-				case 'q':
-					if !isShutDown {
-						outputPGM(c, p, filename, output, world, turn)
-						c.events <- StateChange{turn, Quitting}
-						break mainLoop
-					}
-				case 's':
-					if !isShutDown {
-						outputPGM(c, p, filename, output, world, turn)
-					}
-				case 'k':
-					handleShutdown()
-					break mainLoop
-				case 'p':
-					if !isShutDown {
-						c.events <- StateChange{turn, Paused}
-						fmt.Printf("[Paused] Current turn: %d\n", turn)
-						for {
-							key = <-keyPresses
-							if key == 'p' {
-								c.events <- StateChange{turn, Executing}
-								fmt.Println("[Continuing]")
-								break
-							} else if key == 'q' {
-								outputPGM(c, p, filename, output, world, turn)
-								c.events <- StateChange{turn, Quitting}
-								break mainLoop
-							} else if key == 'k' {
-								handleShutdown()
-								break mainLoop
-							} else if key == 's' {
-								outputPGM(c, p, filename, output, world, turn)
-							}
-						}
-					}
-				}
-
-			default:
+	fmt.Println("[Debug] start main loop")
+	for turn < p.Turns {
+		select {
+		case <-ticker.C:
+			if isShutDown {
+				break 
+			}
+			alive := calculateAliveCells(p, world)
+			c.events <- AliveCellsCount{turn, len(alive)}
+			fmt.Println("[Debug] ticker")
+		case key := <-keyPresses:
+			switch key {
+			case 'q':
 				if !isShutDown {
-					var newWorld [][]byte
-					var flipped []util.Cell
-
-					if useDistributed {
-						task := DistributedTask{
-							World: world,
-							Params: struct {
-								Width  int
-								Height int
-							}{
-								Width:  p.ImageWidth,
-								Height: p.ImageHeight,
-							},
+					fmt.Println("[Debug] q")
+					outputPGM(c, p, filename, output, world, turn)
+					c.events <- StateChange{turn, Quitting}
+					break 
+				}
+			case 's':
+				if !isShutDown {
+					fmt.Println("[Debug] s")
+					outputPGM(c, p, filename, output, world, turn)
+				}
+			case 'k':
+				fmt.Println("[Debug]k")
+				handleShutdown()
+				break 
+			case 'p':
+				if !isShutDown {
+					c.events <- StateChange{turn, Paused}
+					fmt.Printf("[Paused] Current turn: %d\n", turn)
+					for {
+						key = <-keyPresses
+						if key == 'p' {
+							c.events <- StateChange{turn, Executing}
+							fmt.Println("[Continuing]")
+							break
+						} else if key == 'q' {
+							outputPGM(c, p, filename, output, world, turn)
+							c.events <- StateChange{turn, Quitting}
+							break 
+						} else if key == 'k' {
+							handleShutdown()
+							break 
+						} else if key == 's' {
+							outputPGM(c, p, filename, output, world, turn)
 						}
+					}
+				}
+			}
 
-						fmt.Printf("[Debug] Sending distributed computation request for %dx%d grid, turn %d\n",
-							p.ImageWidth, p.ImageHeight, turn)
+		default:
+			fmt.Println("[Debug] default")
+			if !isShutDown {
+				var newWorld [][]byte
+				var flipped []util.Cell
 
-						var response [][]byte
-						err := client.Call("Engine.State", task, &response)
-						if err != nil {
-							fmt.Printf("[Error] Distributed computation failed: %v\nSwitching to local computation\n", err)
+				if useDistributed {
+					task := DistributedTask{
+						World: world,
+						Params: struct {
+							Width  int
+							Height int
+						}{
+							Width:  p.ImageWidth,
+							Height: p.ImageHeight,
+						},
+					}
+
+					fmt.Printf("[Debug] Sending distributed computation request for %dx%d grid, turn %d\n",
+						p.ImageWidth, p.ImageHeight, turn)
+
+					var response [][]byte
+					err := client.Call("Engine.State", task, &response)
+					if err != nil {
+						fmt.Printf("[Error] Distributed computation failed: %v\nSwitching to local computation\n", err)
+						useDistributed = false
+						newWorld, flipped = calculateNextState(p.ImageWidth, p.ImageHeight, world)
+					} else {
+						fmt.Printf("[Debug] Distributed computation succeeded, turn %d\n", turn)
+						if response == nil {
+							fmt.Println("[Error] Server returned nil result")
 							useDistributed = false
 							newWorld, flipped = calculateNextState(p.ImageWidth, p.ImageHeight, world)
 						} else {
-							fmt.Printf("[Debug] Distributed computation succeeded, turn %d\n", turn)
-							if response == nil {
-								fmt.Println("[Error] Server returned nil result")
-								useDistributed = false
-								newWorld, flipped = calculateNextState(p.ImageWidth, p.ImageHeight, world)
-							} else {
-								newWorld = response
-								flipped = findFlippedCells(world, newWorld, p.ImageWidth, p.ImageHeight)
-								fmt.Printf("[Debug] Calculation complete, %d cells flipped\n", len(flipped))
-							}
+							newWorld = response
+							flipped = findFlippedCells(world, newWorld, p.ImageWidth, p.ImageHeight)
+							fmt.Printf("[Debug] Calculation complete, %d cells flipped\n", len(flipped))
 						}
-					} else {
-						// Use local computation
-						newWorld, flipped = calculateNextState(p.ImageWidth, p.ImageHeight, world)
 					}
-
-					// Send cell flipped events
-					for _, cell := range flipped {
-						c.events <- CellFlipped{turn, cell}
-					}
-
-					// Update world state
-					world = newWorld
-					c.events <- TurnComplete{turn}
-					turn++
+				} else {
+					// Use local computation
+					newWorld, flipped = calculateNextState(p.ImageWidth, p.ImageHeight, world)
 				}
+
+				// Send cell flipped events
+				for _, cell := range flipped {
+					c.events <- CellFlipped{turn, cell}
+				}
+
+				// Update world state
+				world = newWorld
+				c.events <- TurnComplete{turn}
+				turn++
 			}
 		}
-
-		// Only send final state if not already shut down
-		if !isShutDown {
-			aliveCells = calculateAliveCells(p, world)
-			c.events <- FinalTurnComplete{turn, aliveCells}
-			outputPGM(c, p, filename, output, world, turn)
-		}
-
-		// Ensure all I/O operations are complete
-		c.ioCommand <- ioCheckIdle
-		<-c.ioIdle
 	}
+	isShutDown = true
+	
+	aliveCells = calculateAliveCells(p, world)
+	c.events <- FinalTurnComplete{turn, aliveCells}
+	outputPGM(c, p, filename, output, world, turn)
+	
+	// Ensure all I/O operations are complete
+	c.ioCommand <- ioCheckIdle
+	<-c.ioIdle
+
+	c.events <- StateChange{turn, Quitting}
+	close(c.events)
+}
