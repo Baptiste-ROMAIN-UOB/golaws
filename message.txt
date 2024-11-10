@@ -1,0 +1,2037 @@
+Taille: 16
+Démarrage du programme
+Threads    1
+Width      16
+Height     16
+Turns      1000
+File 16x16 input done!
+Completed Turns 1000     Final Turn Complete
+File 16x16x1000 output done!
+Benchmark with 1 threads took 317.85507ms
+Threads: 1, Turns: 1000, Time Taken: 317.85507ms
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    1
+Width      16
+Height     16
+Turns      500
+File 16x16 input done!
+Completed Turns 500      Final Turn Complete
+File 16x16x500 output done!
+Benchmark with 1 threads took 231.44463ms
+Threads: 1, Turns: 500, Time Taken: 231.44463ms
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    1
+Width      16
+Height     16
+Turns      100
+File 16x16 input done!
+File 16x16x100 output done!
+Benchmark with 1 threads took 18.78525ms
+Threads: 1, Turns: 100, Time Taken: 18.78525ms
+Completed Turns 100      Final Turn Complete
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    1
+Width      16
+Height     16
+Turns      10
+File 16x16 input done!
+File 16x16x10 output done!
+Benchmark with 1 threads took 12.85785ms
+Threads: 1, Turns: 10, Time Taken: 12.85785ms
+Completed Turns 10       Final Turn Complete
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    1
+Width      16
+Height     16
+Turns      1
+File 16x16 input done!
+File 16x16x1 output done!
+Benchmark with 1 threads took 20.14263ms
+Threads: 1, Turns: 1, Time Taken: 20.14263ms
+Completed Turns 1        Final Turn Complete
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    2
+Width      16
+Height     16
+Turns      1000
+File 16x16 input done!
+Completed Turns 1000     Final Turn Complete
+File 16x16x1000 output done!
+Benchmark with 2 threads took 348.24681ms
+Threads: 2, Turns: 1000, Time Taken: 348.24681ms
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    2
+Width      16
+Height     16
+Turns      500
+File 16x16 input done!
+Completed Turns 500      Final Turn Complete
+File 16x16x500 output done!
+Benchmark with 2 threads took 260.74287ms
+Threads: 2, Turns: 500, Time Taken: 260.74287ms
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    2
+Width      16
+Height     16
+Turns      100
+File 16x16 input done!
+File 16x16x100 output done!
+Benchmark with 2 threads took 19.99422ms
+Threads: 2, Turns: 100, Time Taken: 19.99422ms
+Completed Turns 100      Final Turn Complete
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    2
+Width      16
+Height     16
+Turns      10
+File 16x16 input done!
+File 16x16x10 output done!
+Benchmark with 2 threads took 13.23855ms
+Threads: 2, Turns: 10, Time Taken: 13.23855ms
+Completed Turns 10       Final Turn Complete
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    2
+Width      16
+Height     16
+Turns      1
+File 16x16 input done!
+File 16x16x1 output done!
+Benchmark with 2 threads took 10.55502ms
+Threads: 2, Turns: 1, Time Taken: 10.55502ms
+Completed Turns 1        Final Turn Complete
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    4
+Width      16
+Height     16
+Turns      1000
+File 16x16 input done!
+Completed Turns 1000     Final Turn Complete
+File 16x16x1000 output done!
+Benchmark with 4 threads took 441.47844ms
+Threads: 4, Turns: 1000, Time Taken: 441.47844ms
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    4
+Width      16
+Height     16
+Turns      500
+File 16x16 input done!
+Completed Turns 500      Final Turn Complete
+File 16x16x500 output done!
+Benchmark with 4 threads took 447.57486ms
+Threads: 4, Turns: 500, Time Taken: 447.57486ms
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    4
+Width      16
+Height     16
+Turns      100
+File 16x16 input done!
+File 16x16x100 output done!
+Benchmark with 4 threads took 18.10359ms
+Threads: 4, Turns: 100, Time Taken: 18.10359ms
+Completed Turns 100      Final Turn Complete
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    4
+Width      16
+Height     16
+Turns      10
+File 16x16 input done!
+File 16x16x10 output done!
+Benchmark with 4 threads took 13.29939ms
+Threads: 4, Turns: 10, Time Taken: 13.29939ms
+Completed Turns 10       Final Turn Complete
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    4
+Width      16
+Height     16
+Turns      1
+File 16x16 input done!
+File 16x16x1 output done!
+Benchmark with 4 threads took 13.07367ms
+Threads: 4, Turns: 1, Time Taken: 13.07367ms
+Completed Turns 1        Final Turn Complete
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    8
+Width      16
+Height     16
+Turns      1000
+File 16x16 input done!
+Completed Turns 1000     Final Turn Complete
+File 16x16x1000 output done!
+Benchmark with 8 threads took 533.22318ms
+Threads: 8, Turns: 1000, Time Taken: 533.22318ms
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    8
+Width      16
+Height     16
+Turns      500
+File 16x16 input done!
+Completed Turns 500      Final Turn Complete
+File 16x16x500 output done!
+Benchmark with 8 threads took 259.52004ms
+Threads: 8, Turns: 500, Time Taken: 259.52004ms
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    8
+Width      16
+Height     16
+Turns      100
+File 16x16 input done!
+File 16x16x100 output done!
+Benchmark with 8 threads took 33.63777ms
+Threads: 8, Turns: 100, Time Taken: 33.63777ms
+Completed Turns 100      Final Turn Complete
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    8
+Width      16
+Height     16
+Turns      10
+File 16x16 input done!
+File 16x16x10 output done!
+Benchmark with 8 threads took 12.79179ms
+Threads: 8, Turns: 10, Time Taken: 12.79179ms
+Completed Turns 10       Final Turn Complete
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    8
+Width      16
+Height     16
+Turns      1
+File 16x16 input done!
+File 16x16x1 output done!
+Benchmark with 8 threads took 13.92651ms
+Threads: 8, Turns: 1, Time Taken: 13.92651ms
+Completed Turns 1        Final Turn Complete
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    16
+Width      16
+Height     16
+Turns      1000
+File 16x16 input done!
+Completed Turns 1000     Final Turn Complete
+File 16x16x1000 output done!
+Benchmark with 16 threads took 538.94367ms
+Threads: 16, Turns: 1000, Time Taken: 538.94367ms
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    16
+Width      16
+Height     16
+Turns      500
+File 16x16 input done!
+Completed Turns 500      Final Turn Complete
+File 16x16x500 output done!
+Benchmark with 16 threads took 486.20106ms
+Threads: 16, Turns: 500, Time Taken: 486.20106ms
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    16
+Width      16
+Height     16
+Turns      100
+File 16x16 input done!
+File 16x16x100 output done!
+Benchmark with 16 threads took 26.28909ms
+Threads: 16, Turns: 100, Time Taken: 26.28909ms
+Completed Turns 100      Final Turn Complete
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    16
+Width      16
+Height     16
+Turns      10
+File 16x16 input done!
+File 16x16x10 output done!
+Benchmark with 16 threads took 13.7169ms
+Threads: 16, Turns: 10, Time Taken: 13.7169ms
+Completed Turns 10       Final Turn Complete
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    16
+Width      16
+Height     16
+Turns      1
+File 16x16 input done!
+File 16x16x1 output done!
+Benchmark with 16 threads took 13.94235ms
+Threads: 16, Turns: 1, Time Taken: 13.94235ms
+Completed Turns 1        Final Turn Complete
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    32
+Width      16
+Height     16
+Turns      1000
+File 16x16 input done!
+Completed Turns 1000     Final Turn Complete
+File 16x16x1000 output done!
+Benchmark with 32 threads took 325.49904ms
+Threads: 32, Turns: 1000, Time Taken: 325.49904ms
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    32
+Width      16
+Height     16
+Turns      500
+File 16x16 input done!
+File 16x16x500 output done!
+Benchmark with 32 threads took 333.30447ms
+Threads: 32, Turns: 500, Time Taken: 333.30447ms
+Completed Turns 500      Final Turn Complete
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    32
+Width      16
+Height     16
+Turns      100
+File 16x16 input done!
+File 16x16x100 output done!
+Benchmark with 32 threads took 24.95448ms
+Threads: 32, Turns: 100, Time Taken: 24.95448ms
+Completed Turns 100      Final Turn Complete
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    32
+Width      16
+Height     16
+Turns      10
+File 16x16 input done!
+File 16x16x10 output done!
+Benchmark with 32 threads took 13.12308ms
+Threads: 32, Turns: 10, Time Taken: 13.12308ms
+Completed Turns 10       Final Turn Complete
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    32
+Width      16
+Height     16
+Turns      1
+File 16x16 input done!
+File 16x16x1 output done!
+Benchmark with 32 threads took 13.47345ms
+Threads: 32, Turns: 1, Time Taken: 13.47345ms
+Completed Turns 1        Final Turn Complete
+Completed Turns 1        Quitting
+Taille: 32
+Démarrage du programme
+Threads    1
+Width      32
+Height     32
+Turns      1000
+Démarrage du programme
+Threads    1
+Width      32
+Height     32
+Turns      500
+Démarrage du programme
+Threads    1
+Width      32
+Height     32
+Turns      100
+Démarrage du programme
+Threads    1
+Width      32
+Height     32
+Turns      10
+Démarrage du programme
+Threads    1
+Width      32
+Height     32
+Turns      1
+Démarrage du programme
+Threads    2
+Width      32
+Height     32
+Turns      1000
+Démarrage du programme
+Threads    2
+Width      32
+Height     32
+Turns      500
+Démarrage du programme
+Threads    2
+Width      32
+Height     32
+Turns      100
+Démarrage du programme
+Threads    2
+Width      32
+Height     32
+Turns      10
+Démarrage du programme
+Threads    2
+Width      32
+Height     32
+Turns      1
+Démarrage du programme
+Threads    4
+Width      32
+Height     32
+Turns      1000
+Démarrage du programme
+Threads    4
+Width      32
+Height     32
+Turns      500
+Démarrage du programme
+Threads    4
+Width      32
+Height     32
+Turns      100
+Démarrage du programme
+Threads    4
+Width      32
+Height     32
+Turns      10
+Démarrage du programme
+Threads    4
+Width      32
+Height     32
+Turns      1
+Démarrage du programme
+Threads    8
+Width      32
+Height     32
+Turns      1000
+Démarrage du programme
+Threads    8
+Width      32
+Height     32
+Turns      500
+Démarrage du programme
+Threads    8
+Width      32
+Height     32
+Turns      100
+Démarrage du programme
+Threads    8
+Width      32
+Height     32
+Turns      10
+Démarrage du programme
+Threads    8
+Width      32
+Height     32
+Turns      1
+Démarrage du programme
+Threads    16
+Width      32
+Height     32
+Turns      1000
+Démarrage du programme
+Threads    16
+Width      32
+Height     32
+Turns      500
+Démarrage du programme
+Threads    16
+Width      32
+Height     32
+Turns      100
+Démarrage du programme
+Threads    16
+Width      32
+Height     32
+Turns      10
+Démarrage du programme
+Threads    16
+Width      32
+Height     32
+Turns      1
+Démarrage du programme
+Threads    32
+Width      32
+Height     32
+Turns      1000
+Démarrage du programme
+Threads    32
+Width      32
+Height     32
+Turns      500
+Démarrage du programme
+Threads    32
+Width      32
+Height     32
+Turns      100
+Démarrage du programme
+Threads    32
+Width      32
+Height     32
+Turns      10
+Démarrage du programme
+Threads    32
+Width      32
+Height     32
+Turns      1
+Taille: 64
+Démarrage du programme
+Threads    1
+Width      64
+Height     64
+Turns      1000
+File 64x64 input done!
+Completed Turns 1000     Final Turn Complete
+File 64x64x1000 output done!
+Benchmark with 1 threads took 1.222029s
+Threads: 1, Turns: 1000, Time Taken: 1.222029s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    1
+Width      64
+Height     64
+Turns      500
+File 64x64 input done!
+Completed Turns 500      Final Turn Complete
+File 64x64x500 output done!
+Benchmark with 1 threads took 848.37051ms
+Threads: 1, Turns: 500, Time Taken: 848.37051ms
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    1
+Width      64
+Height     64
+Turns      100
+File 64x64 input done!
+Completed Turns 100      Final Turn Complete
+File 64x64x100 output done!
+Benchmark with 1 threads took 345.77478ms
+Threads: 1, Turns: 100, Time Taken: 345.77478ms
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    1
+Width      64
+Height     64
+Turns      10
+File 64x64 input done!
+Completed Turns 10       Final Turn Complete
+File 64x64x10 output done!
+Benchmark with 1 threads took 337.69539ms
+Threads: 1, Turns: 10, Time Taken: 337.69539ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    1
+Width      64
+Height     64
+Turns      1
+File 64x64 input done!
+Completed Turns 1        Final Turn Complete
+File 64x64x1 output done!
+Benchmark with 1 threads took 312.52437ms
+Threads: 1, Turns: 1, Time Taken: 312.52437ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    2
+Width      64
+Height     64
+Turns      1000
+File 64x64 input done!
+Completed Turns 1000     Final Turn Complete
+File 64x64x1000 output done!
+Benchmark with 2 threads took 1.10155572s
+Threads: 2, Turns: 1000, Time Taken: 1.10155572s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    2
+Width      64
+Height     64
+Turns      500
+File 64x64 input done!
+Completed Turns 500      Final Turn Complete
+File 64x64x500 output done!
+Benchmark with 2 threads took 658.36134ms
+Threads: 2, Turns: 500, Time Taken: 658.36134ms
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    2
+Width      64
+Height     64
+Turns      100
+File 64x64 input done!
+Completed Turns 100      Final Turn Complete
+File 64x64x100 output done!
+Benchmark with 2 threads took 315.747ms
+Threads: 2, Turns: 100, Time Taken: 315.747ms
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    2
+Width      64
+Height     64
+Turns      10
+File 64x64 input done!
+Completed Turns 10       Final Turn Complete
+File 64x64x10 output done!
+Benchmark with 2 threads took 291.36222ms
+Threads: 2, Turns: 10, Time Taken: 291.36222ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    2
+Width      64
+Height     64
+Turns      1
+File 64x64 input done!
+Completed Turns 1        Final Turn Complete
+File 64x64x1 output done!
+Benchmark with 2 threads took 241.71885ms
+Threads: 2, Turns: 1, Time Taken: 241.71885ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    4
+Width      64
+Height     64
+Turns      1000
+File 64x64 input done!
+File 64x64x468 output done!
+Completed Turns 1000     Final Turn Complete
+File 64x64x1000 output done!
+Benchmark with 4 threads took 912.1716ms
+Threads: 4, Turns: 1000, Time Taken: 912.1716ms
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    4
+Width      64
+Height     64
+Turns      500
+File 64x64 input done!
+Completed Turns 500      Final Turn Complete
+File 64x64x500 output done!
+Benchmark with 4 threads took 613.23903ms
+Threads: 4, Turns: 500, Time Taken: 613.23903ms
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    4
+Width      64
+Height     64
+Turns      100
+File 64x64 input done!
+Completed Turns 100      Final Turn Complete
+File 64x64x100 output done!
+Benchmark with 4 threads took 316.78146ms
+Threads: 4, Turns: 100, Time Taken: 316.78146ms
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    4
+Width      64
+Height     64
+Turns      10
+File 64x64 input done!
+Completed Turns 10       Final Turn Complete
+File 64x64x10 output done!
+Benchmark with 4 threads took 278.50842ms
+Threads: 4, Turns: 10, Time Taken: 278.50842ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    4
+Width      64
+Height     64
+Turns      1
+File 64x64 input done!
+Completed Turns 1        Final Turn Complete
+File 64x64x1 output done!
+Benchmark with 4 threads took 244.89693ms
+Threads: 4, Turns: 1, Time Taken: 244.89693ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    8
+Width      64
+Height     64
+Turns      1000
+File 64x64 input done!
+Completed Turns 1000     Final Turn Complete
+File 64x64x1000 output done!
+Benchmark with 8 threads took 916.20531ms
+Threads: 8, Turns: 1000, Time Taken: 916.20531ms
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    8
+Width      64
+Height     64
+Turns      500
+File 64x64 input done!
+Completed Turns 500      Final Turn Complete
+File 64x64x500 output done!
+Benchmark with 8 threads took 607.19076ms
+Threads: 8, Turns: 500, Time Taken: 607.19076ms
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    8
+Width      64
+Height     64
+Turns      100
+File 64x64 input done!
+Completed Turns 100      Final Turn Complete
+File 64x64x100 output done!
+Benchmark with 8 threads took 309.32874ms
+Threads: 8, Turns: 100, Time Taken: 309.32874ms
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    8
+Width      64
+Height     64
+Turns      10
+File 64x64 input done!
+Completed Turns 10       Final Turn Complete
+File 64x64x10 output done!
+Benchmark with 8 threads took 327.78135ms
+Threads: 8, Turns: 10, Time Taken: 327.78135ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    8
+Width      64
+Height     64
+Turns      1
+File 64x64 input done!
+Completed Turns 1        Final Turn Complete
+File 64x64x1 output done!
+Benchmark with 8 threads took 243.3222ms
+Threads: 8, Turns: 1, Time Taken: 243.3222ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    16
+Width      64
+Height     64
+Turns      1000
+File 64x64 input done!
+Completed Turns 1000     Final Turn Complete
+File 64x64x1000 output done!
+Benchmark with 16 threads took 908.87076ms
+Threads: 16, Turns: 1000, Time Taken: 908.87076ms
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    16
+Width      64
+Height     64
+Turns      500
+File 64x64 input done!
+Completed Turns 500      Final Turn Complete
+File 64x64x500 output done!
+Benchmark with 16 threads took 801.02682ms
+Threads: 16, Turns: 500, Time Taken: 801.02682ms
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    16
+Width      64
+Height     64
+Turns      100
+File 64x64 input done!
+Completed Turns 100      Final Turn Complete
+File 64x64x100 output done!
+Benchmark with 16 threads took 320.5125ms
+Threads: 16, Turns: 100, Time Taken: 320.5125ms
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    16
+Width      64
+Height     64
+Turns      10
+File 64x64 input done!
+Completed Turns 10       Final Turn Complete
+File 64x64x10 output done!
+Benchmark with 16 threads took 389.75247ms
+Threads: 16, Turns: 10, Time Taken: 389.75247ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    16
+Width      64
+Height     64
+Turns      1
+File 64x64 input done!
+Completed Turns 1        Final Turn Complete
+File 64x64x1 output done!
+Benchmark with 16 threads took 391.44204ms
+Threads: 16, Turns: 1, Time Taken: 391.44204ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    32
+Width      64
+Height     64
+Turns      1000
+File 64x64 input done!
+Completed Turns 1000     Final Turn Complete
+File 64x64x1000 output done!
+Benchmark with 32 threads took 980.24769ms
+Threads: 32, Turns: 1000, Time Taken: 980.24769ms
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    32
+Width      64
+Height     64
+Turns      500
+File 64x64 input done!
+Completed Turns 500      Final Turn Complete
+File 64x64x500 output done!
+Benchmark with 32 threads took 655.11108ms
+Threads: 32, Turns: 500, Time Taken: 655.11108ms
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    32
+Width      64
+Height     64
+Turns      100
+File 64x64 input done!
+Completed Turns 100      Final Turn Complete
+File 64x64x100 output done!
+Benchmark with 32 threads took 787.03056ms
+Threads: 32, Turns: 100, Time Taken: 787.03056ms
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    32
+Width      64
+Height     64
+Turns      10
+File 64x64 input done!
+Completed Turns 10       Final Turn Complete
+File 64x64x10 output done!
+Benchmark with 32 threads took 347.88717ms
+Completed Turns 10       Quitting
+Threads: 32, Turns: 10, Time Taken: 347.88717ms
+Démarrage du programme
+Threads    32
+Width      64
+Height     64
+Turns      1
+File 64x64 input done!
+Completed Turns 1        Final Turn Complete
+File 64x64x1 output done!
+Benchmark with 32 threads took 367.9092ms
+Threads: 32, Turns: 1, Time Taken: 367.9092ms
+Completed Turns 1        Quitting
+Taille: 128
+Démarrage du programme
+Threads    1
+Width      128
+Height     128
+Turns      1000
+File 128x128 input done!
+Completed Turns 419      Alive Cells 525      Avg  209 turns/sec
+Completed Turns 906      Alive Cells 525      Avg  226 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 128x128x1000 output done!
+Benchmark with 1 threads took 4.67697159s
+Threads: 1, Turns: 1000, Time Taken: 4.67697159s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    1
+Width      128
+Height     128
+Turns      500
+File 128x128 input done!
+Completed Turns 500      Final Turn Complete
+File 128x128x500 output done!
+Benchmark with 1 threads took 2.28906693s
+Threads: 1, Turns: 500, Time Taken: 2.28906693s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    1
+Width      128
+Height     128
+Turns      100
+File 128x128 input done!
+Completed Turns 100      Final Turn Complete
+File 128x128x100 output done!
+Benchmark with 1 threads took 612.73854ms
+Threads: 1, Turns: 100, Time Taken: 612.73854ms
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    1
+Width      128
+Height     128
+Turns      10
+File 128x128 input done!
+Completed Turns 10       Final Turn Complete
+File 128x128x10 output done!
+Benchmark with 1 threads took 331.05771ms
+Threads: 1, Turns: 10, Time Taken: 331.05771ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    1
+Width      128
+Height     128
+Turns      1
+File 128x128 input done!
+Completed Turns 1        Final Turn Complete
+File 128x128x1 output done!
+Benchmark with 1 threads took 351.24021ms
+Threads: 1, Turns: 1, Time Taken: 351.24021ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    2
+Width      128
+Height     128
+Turns      1000
+File 128x128 input done!
+Completed Turns 827      Alive Cells 525      Avg  413 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 128x128x1000 output done!
+Benchmark with 2 threads took 2.64119697s
+Threads: 2, Turns: 1000, Time Taken: 2.64119697s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    2
+Width      128
+Height     128
+Turns      500
+File 128x128 input done!
+Completed Turns 500      Final Turn Complete
+File 128x128x500 output done!
+Benchmark with 2 threads took 1.42576875s
+Threads: 2, Turns: 500, Time Taken: 1.42576875s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    2
+Width      128
+Height     128
+Turns      100
+File 128x128 input done!
+Completed Turns 100      Final Turn Complete
+File 128x128x100 output done!
+Benchmark with 2 threads took 506.33865ms
+Threads: 2, Turns: 100, Time Taken: 506.33865ms
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    2
+Width      128
+Height     128
+Turns      10
+File 128x128 input done!
+Completed Turns 10       Final Turn Complete
+File 128x128x10 output done!
+Benchmark with 2 threads took 288.61533ms
+Threads: 2, Turns: 10, Time Taken: 288.61533ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    2
+Width      128
+Height     128
+Turns      1
+File 128x128 input done!
+Completed Turns 1        Final Turn Complete
+File 128x128x1 output done!
+Benchmark with 2 threads took 271.3311ms
+Threads: 2, Turns: 1, Time Taken: 271.3311ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    4
+Width      128
+Height     128
+Turns      1000
+File 128x128 input done!
+Completed Turns 976      Alive Cells 525      Avg  488 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 128x128x1000 output done!
+Benchmark with 4 threads took 2.28697101s
+Threads: 4, Turns: 1000, Time Taken: 2.28697101s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    4
+Width      128
+Height     128
+Turns      500
+File 128x128 input done!
+Completed Turns 500      Final Turn Complete
+File 128x128x500 output done!
+Benchmark with 4 threads took 1.26063072s
+Threads: 4, Turns: 500, Time Taken: 1.26063072s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    4
+Width      128
+Height     128
+Turns      100
+File 128x128 input done!
+Completed Turns 100      Final Turn Complete
+File 128x128x100 output done!
+Benchmark with 4 threads took 528.66765ms
+Threads: 4, Turns: 100, Time Taken: 528.66765ms
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    4
+Width      128
+Height     128
+Turns      10
+File 128x128 input done!
+Completed Turns 10       Final Turn Complete
+File 128x128x10 output done!
+Benchmark with 4 threads took 289.97469ms
+Threads: 4, Turns: 10, Time Taken: 289.97469ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    4
+Width      128
+Height     128
+Turns      1
+File 128x128 input done!
+Completed Turns 1        Final Turn Complete
+File 128x128x1 output done!
+Benchmark with 4 threads took 264.66066ms
+Threads: 4, Turns: 1, Time Taken: 264.66066ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    8
+Width      128
+Height     128
+Turns      1000
+File 128x128 input done!
+Completed Turns 1000     Final Turn Complete
+File 128x128x1000 output done!
+Benchmark with 8 threads took 2.19080529s
+Threads: 8, Turns: 1000, Time Taken: 2.19080529s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    8
+Width      128
+Height     128
+Turns      500
+File 128x128 input done!
+Completed Turns 500      Final Turn Complete
+File 128x128x500 output done!
+Benchmark with 8 threads took 1.25316342s
+Threads: 8, Turns: 500, Time Taken: 1.25316342s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    8
+Width      128
+Height     128
+Turns      100
+File 128x128 input done!
+Completed Turns 100      Final Turn Complete
+File 128x128x100 output done!
+Benchmark with 8 threads took 482.82471ms
+Threads: 8, Turns: 100, Time Taken: 482.82471ms
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    8
+Width      128
+Height     128
+Turns      10
+File 128x128 input done!
+Completed Turns 10       Final Turn Complete
+File 128x128x10 output done!
+Benchmark with 8 threads took 323.74593ms
+Threads: 8, Turns: 10, Time Taken: 323.74593ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    8
+Width      128
+Height     128
+Turns      1
+File 128x128 input done!
+Completed Turns 1        Final Turn Complete
+File 128x128x1 output done!
+Benchmark with 8 threads took 265.66245ms
+Threads: 8, Turns: 1, Time Taken: 265.66245ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    16
+Width      128
+Height     128
+Turns      1000
+File 128x128 input done!
+Completed Turns 1000     Final Turn Complete
+File 128x128x1000 output done!
+Benchmark with 16 threads took 2.2280697s
+Threads: 16, Turns: 1000, Time Taken: 2.2280697s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    16
+Width      128
+Height     128
+Turns      500
+File 128x128 input done!
+Completed Turns 500      Final Turn Complete
+File 128x128x500 output done!
+Benchmark with 16 threads took 1.29450141s
+Threads: 16, Turns: 500, Time Taken: 1.29450141s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    16
+Width      128
+Height     128
+Turns      100
+File 128x128 input done!
+Completed Turns 100      Final Turn Complete
+File 128x128x100 output done!
+Benchmark with 16 threads took 478.28313ms
+Threads: 16, Turns: 100, Time Taken: 478.28313ms
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    16
+Width      128
+Height     128
+Turns      10
+File 128x128 input done!
+Completed Turns 10       Final Turn Complete
+File 128x128x10 output done!
+Benchmark with 16 threads took 290.34468ms
+Threads: 16, Turns: 10, Time Taken: 290.34468ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    16
+Width      128
+Height     128
+Turns      1
+File 128x128 input done!
+Completed Turns 1        Final Turn Complete
+File 128x128x1 output done!
+Benchmark with 16 threads took 271.97667ms
+Threads: 16, Turns: 1, Time Taken: 271.97667ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    32
+Width      128
+Height     128
+Turns      1000
+File 128x128 input done!
+Completed Turns 864      Alive Cells 525      Avg  432 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 128x128x1000 output done!
+Benchmark with 32 threads took 2.59983144s
+Threads: 32, Turns: 1000, Time Taken: 2.59983144s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    32
+Width      128
+Height     128
+Turns      500
+File 128x128 input done!
+Completed Turns 500      Final Turn Complete
+File 128x128x500 output done!
+Benchmark with 32 threads took 1.37316906s
+Threads: 32, Turns: 500, Time Taken: 1.37316906s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    32
+Width      128
+Height     128
+Turns      100
+File 128x128 input done!
+Completed Turns 100      Final Turn Complete
+File 128x128x100 output done!
+Benchmark with 32 threads took 500.8446ms
+Threads: 32, Turns: 100, Time Taken: 500.8446ms
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    32
+Width      128
+Height     128
+Turns      10
+File 128x128 input done!
+Completed Turns 10       Final Turn Complete
+File 128x128x10 output done!
+Benchmark with 32 threads took 286.92972ms
+Threads: 32, Turns: 10, Time Taken: 286.92972ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    32
+Width      128
+Height     128
+Turns      1
+File 128x128 input done!
+Completed Turns 1        Final Turn Complete
+File 128x128x1 output done!
+Benchmark with 32 threads took 285.79266ms
+Threads: 32, Turns: 1, Time Taken: 285.79266ms
+Completed Turns 1        Quitting
+Taille: 256
+Démarrage du programme
+Threads    1
+Width      256
+Height     256
+Turns      1000
+File 256x256 input done!
+Completed Turns 147      Alive Cells 1875     Avg   73 turns/sec
+Completed Turns 301      Alive Cells 2047     Avg   75 turns/sec
+Completed Turns 458      Alive Cells 1660     Avg   76 turns/sec
+Completed Turns 618      Alive Cells 1462     Avg   78 turns/sec
+Completed Turns 777      Alive Cells 1514     Avg   79 turns/sec
+Completed Turns 937      Alive Cells 1435     Avg   79 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 256x256x1000 output done!
+Benchmark with 1 threads took 13.21047459s
+Threads: 1, Turns: 1000, Time Taken: 13.21047459s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    1
+Width      256
+Height     256
+Turns      500
+File 256x256 input done!
+Completed Turns 151      Alive Cells 1815     Avg   75 turns/sec
+Completed Turns 309      Alive Cells 2119     Avg   77 turns/sec
+Completed Turns 467      Alive Cells 1727     Avg   77 turns/sec
+Completed Turns 500      Final Turn Complete
+File 256x256x500 output done!
+Benchmark with 1 threads took 6.86649987s
+Threads: 1, Turns: 500, Time Taken: 6.86649987s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    1
+Width      256
+Height     256
+Turns      100
+File 256x256 input done!
+Completed Turns 100      Final Turn Complete
+File 256x256x100 output done!
+Benchmark with 1 threads took 1.94447313s
+Threads: 1, Turns: 100, Time Taken: 1.94447313s
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    1
+Width      256
+Height     256
+Turns      10
+File 256x256 input done!
+Completed Turns 10       Final Turn Complete
+File 256x256x10 output done!
+Benchmark with 1 threads took 589.54095ms
+Threads: 1, Turns: 10, Time Taken: 589.54095ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    1
+Width      256
+Height     256
+Turns      1
+File 256x256 input done!
+Completed Turns 1        Final Turn Complete
+File 256x256x1 output done!
+Benchmark with 1 threads took 456.093ms
+Threads: 1, Turns: 1, Time Taken: 456.093ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    2
+Width      256
+Height     256
+Turns      1000
+File 256x256 input done!
+Completed Turns 203      Alive Cells 2082     Avg  101 turns/sec
+Completed Turns 427      Alive Cells 1688     Avg  106 turns/sec
+Completed Turns 646      Alive Cells 1451     Avg  107 turns/sec
+Completed Turns 877      Alive Cells 1316     Avg  112 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 256x256x1000 output done!
+Benchmark with 2 threads took 9.50383314s
+Threads: 2, Turns: 1000, Time Taken: 9.50383314s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    2
+Width      256
+Height     256
+Turns      500
+File 256x256 input done!
+Completed Turns 214      Alive Cells 2104     Avg  107 turns/sec
+Completed Turns 438      Alive Cells 1616     Avg  109 turns/sec
+Completed Turns 500      Final Turn Complete
+File 256x256x500 output done!
+Benchmark with 2 threads took 4.95446958s
+Threads: 2, Turns: 500, Time Taken: 4.95446958s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    2
+Width      256
+Height     256
+Turns      100
+File 256x256 input done!
+Completed Turns 100      Final Turn Complete
+File 256x256x100 output done!
+Benchmark with 2 threads took 1.42360902s
+Threads: 2, Turns: 100, Time Taken: 1.42360902s
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    2
+Width      256
+Height     256
+Turns      10
+File 256x256 input done!
+Completed Turns 10       Final Turn Complete
+File 256x256x10 output done!
+Benchmark with 2 threads took 558.11916ms
+Threads: 2, Turns: 10, Time Taken: 558.11916ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    2
+Width      256
+Height     256
+Turns      1
+File 256x256 input done!
+Completed Turns 1        Final Turn Complete
+File 256x256x1 output done!
+Benchmark with 2 threads took 464.7204ms
+Threads: 2, Turns: 1, Time Taken: 464.7204ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    4
+Width      256
+Height     256
+Turns      1000
+File 256x256 input done!
+Completed Turns 233      Alive Cells 2105     Avg  116 turns/sec
+Completed Turns 488      Alive Cells 1654     Avg  122 turns/sec
+Completed Turns 751      Alive Cells 1654     Avg  125 turns/sec
+Completed Turns 963      Alive Cells 1338     Avg  121 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 256x256x1000 output done!
+Benchmark with 4 threads took 8.69318883s
+Threads: 4, Turns: 1000, Time Taken: 8.69318883s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    4
+Width      256
+Height     256
+Turns      500
+File 256x256 input done!
+Completed Turns 225      Alive Cells 2076     Avg  112 turns/sec
+Completed Turns 474      Alive Cells 1702     Avg  118 turns/sec
+Completed Turns 500      Final Turn Complete
+File 256x256x500 output done!
+Benchmark with 4 threads took 4.6777212s
+Threads: 4, Turns: 500, Time Taken: 4.6777212s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    4
+Width      256
+Height     256
+Turns      100
+File 256x256 input done!
+Completed Turns 100      Final Turn Complete
+File 256x256x100 output done!
+Benchmark with 4 threads took 1.25385129s
+Threads: 4, Turns: 100, Time Taken: 1.25385129s
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    4
+Width      256
+Height     256
+Turns      10
+File 256x256 input done!
+Completed Turns 10       Final Turn Complete
+File 256x256x10 output done!
+Benchmark with 4 threads took 581.59566ms
+Threads: 4, Turns: 10, Time Taken: 581.59566ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    4
+Width      256
+Height     256
+Turns      1
+File 256x256 input done!
+Completed Turns 1        Final Turn Complete
+File 256x256x1 output done!
+Benchmark with 4 threads took 459.26856ms
+Threads: 4, Turns: 1, Time Taken: 459.26856ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    8
+Width      256
+Height     256
+Turns      1000
+File 256x256 input done!
+Completed Turns 241      Alive Cells 2121     Avg  120 turns/sec
+Completed Turns 496      Alive Cells 1668     Avg  124 turns/sec
+Completed Turns 721      Alive Cells 1532     Avg  120 turns/sec
+Completed Turns 944      Alive Cells 1432     Avg  117 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 256x256x1000 output done!
+Benchmark with 8 threads took 8.836776s
+Threads: 8, Turns: 1000, Time Taken: 8.836776s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    8
+Width      256
+Height     256
+Turns      500
+File 256x256 input done!
+Completed Turns 246      Alive Cells 2145     Avg  123 turns/sec
+Completed Turns 496      Alive Cells 1668     Avg  124 turns/sec
+Completed Turns 500      Final Turn Complete
+File 256x256x500 output done!
+Benchmark with 8 threads took 4.4387955s
+Threads: 8, Turns: 500, Time Taken: 4.4387955s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    8
+Width      256
+Height     256
+Turns      100
+File 256x256 input done!
+Completed Turns 100      Final Turn Complete
+File 256x256x100 output done!
+Benchmark with 8 threads took 1.28496033s
+Threads: 8, Turns: 100, Time Taken: 1.28496033s
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    8
+Width      256
+Height     256
+Turns      10
+File 256x256 input done!
+Completed Turns 10       Final Turn Complete
+File 256x256x10 output done!
+Benchmark with 8 threads took 559.40679ms
+Threads: 8, Turns: 10, Time Taken: 559.40679ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    8
+Width      256
+Height     256
+Turns      1
+File 256x256 input done!
+Completed Turns 1        Final Turn Complete
+File 256x256x1 output done!
+Benchmark with 8 threads took 491.45319ms
+Threads: 8, Turns: 1, Time Taken: 491.45319ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    16
+Width      256
+Height     256
+Turns      1000
+File 256x256 input done!
+Completed Turns 237      Alive Cells 2218     Avg  118 turns/sec
+Completed Turns 486      Alive Cells 1704     Avg  121 turns/sec
+Completed Turns 738      Alive Cells 1539     Avg  123 turns/sec
+Completed Turns 975      Alive Cells 1337     Avg  123 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 256x256x1000 output done!
+Benchmark with 16 threads took 8.65320993s
+Threads: 16, Turns: 1000, Time Taken: 8.65320993s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    16
+Width      256
+Height     256
+Turns      500
+File 256x256 input done!
+Completed Turns 234      Alive Cells 2117     Avg  117 turns/sec
+Completed Turns 483      Alive Cells 1754     Avg  120 turns/sec
+Completed Turns 500      Final Turn Complete
+File 256x256x500 output done!
+Benchmark with 16 threads took 4.55492457s
+Threads: 16, Turns: 500, Time Taken: 4.55492457s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    16
+Width      256
+Height     256
+Turns      100
+File 256x256 input done!
+Completed Turns 100      Final Turn Complete
+File 256x256x100 output done!
+Benchmark with 16 threads took 1.35129942s
+Threads: 16, Turns: 100, Time Taken: 1.35129942s
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    16
+Width      256
+Height     256
+Turns      10
+File 256x256 input done!
+Completed Turns 10       Final Turn Complete
+File 256x256x10 output done!
+Benchmark with 16 threads took 573.52734ms
+Threads: 16, Turns: 10, Time Taken: 573.52734ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    16
+Width      256
+Height     256
+Turns      1
+File 256x256 input done!
+Completed Turns 1        Final Turn Complete
+File 256x256x1 output done!
+Benchmark with 16 threads took 717.52572ms
+Threads: 16, Turns: 1, Time Taken: 717.52572ms
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    32
+Width      256
+Height     256
+Turns      1000
+File 256x256 input done!
+Completed Turns 208      Alive Cells 2049     Avg  104 turns/sec
+Completed Turns 430      Alive Cells 1681     Avg  107 turns/sec
+Completed Turns 662      Alive Cells 1573     Avg  110 turns/sec
+Completed Turns 876      Alive Cells 1298     Avg  111 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 256x256x1000 output done!
+Benchmark with 32 threads took 9.51667929s
+Threads: 32, Turns: 1000, Time Taken: 9.51667929s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    32
+Width      256
+Height     256
+Turns      500
+File 256x256 input done!
+Completed Turns 187      Alive Cells 1983     Avg   93 turns/sec
+Completed Turns 394      Alive Cells 1808     Avg   98 turns/sec
+Completed Turns 500      Final Turn Complete
+File 256x256x500 output done!
+Benchmark with 32 threads took 5.36980149s
+Threads: 32, Turns: 500, Time Taken: 5.36980149s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    32
+Width      256
+Height     256
+Turns      100
+File 256x256 input done!
+Completed Turns 100      Final Turn Complete
+File 256x256x100 output done!
+Benchmark with 32 threads took 1.37613357s
+Threads: 32, Turns: 100, Time Taken: 1.37613357s
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    32
+Width      256
+Height     256
+Turns      10
+File 256x256 input done!
+Completed Turns 10       Final Turn Complete
+File 256x256x10 output done!
+Benchmark with 32 threads took 616.77756ms
+Threads: 32, Turns: 10, Time Taken: 616.77756ms
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    32
+Width      256
+Height     256
+Turns      1
+File 256x256 input done!
+Completed Turns 1        Final Turn Complete
+File 256x256x1 output done!
+Benchmark with 32 threads took 459.95328ms
+Threads: 32, Turns: 1, Time Taken: 459.95328ms
+Completed Turns 1        Quitting
+Taille: 512
+Démarrage du programme
+Threads    1
+Width      512
+Height     512
+Turns      1000
+File 512x512 input done!
+Completed Turns 39       Alive Cells 6739     Avg   19 turns/sec
+Completed Turns 79       Alive Cells 6627     Avg   19 turns/sec
+Completed Turns 119      Alive Cells 6872     Avg   19 turns/sec
+Completed Turns 159      Alive Cells 6805     Avg   20 turns/sec
+Completed Turns 198      Alive Cells 6791     Avg   19 turns/sec
+Completed Turns 231      Alive Cells 6639     Avg   18 turns/sec
+Completed Turns 257      Alive Cells 6759     Avg   16 turns/sec
+Completed Turns 290      Alive Cells 7118     Avg   15 turns/sec
+Completed Turns 321      Alive Cells 6624     Avg   15 turns/sec
+Completed Turns 347      Alive Cells 6725     Avg   15 turns/sec
+Completed Turns 377      Alive Cells 6927     Avg   14 turns/sec
+Completed Turns 408      Alive Cells 7059     Avg   14 turns/sec
+Completed Turns 437      Alive Cells 6795     Avg   15 turns/sec
+Completed Turns 469      Alive Cells 6702     Avg   15 turns/sec
+Completed Turns 506      Alive Cells 6533     Avg   16 turns/sec
+Completed Turns 545      Alive Cells 6506     Avg   18 turns/sec
+Completed Turns 584      Alive Cells 6569     Avg   19 turns/sec
+Completed Turns 613      Alive Cells 6453     Avg   17 turns/sec
+Completed Turns 648      Alive Cells 6593     Avg   17 turns/sec
+Completed Turns 666      Alive Cells 6730     Avg   13 turns/sec
+Completed Turns 685      Alive Cells 6838     Avg   12 turns/sec
+Completed Turns 700      Alive Cells 6824     Avg    8 turns/sec
+Completed Turns 729      Alive Cells 6765     Avg   10 turns/sec
+Completed Turns 753      Alive Cells 6983     Avg   11 turns/sec
+Completed Turns 775      Alive Cells 6859     Avg   12 turns/sec
+Completed Turns 799      Alive Cells 6721     Avg   11 turns/sec
+Completed Turns 833      Alive Cells 6570     Avg   13 turns/sec
+Completed Turns 868      Alive Cells 6439     Avg   15 turns/sec
+Completed Turns 897      Alive Cells 6493     Avg   16 turns/sec
+Completed Turns 927      Alive Cells 6522     Avg   15 turns/sec
+Completed Turns 958      Alive Cells 6367     Avg   15 turns/sec
+Completed Turns 989      Alive Cells 6372     Avg   15 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 512x512x1000 output done!
+Benchmark with 1 threads took 1m5.77177581s
+Threads: 1, Turns: 1000, Time Taken: 1m5.77177581s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    1
+Width      512
+Height     512
+Turns      500
+File 512x512 input done!
+Completed Turns 36       Alive Cells 6743     Avg   18 turns/sec
+Completed Turns 75       Alive Cells 6699     Avg   18 turns/sec
+Completed Turns 111      Alive Cells 6801     Avg   18 turns/sec
+Completed Turns 146      Alive Cells 6683     Avg   18 turns/sec
+Completed Turns 177      Alive Cells 6817     Avg   17 turns/sec
+Completed Turns 209      Alive Cells 6805     Avg   16 turns/sec
+Completed Turns 248      Alive Cells 6778     Avg   17 turns/sec
+Completed Turns 281      Alive Cells 6995     Avg   17 turns/sec
+Completed Turns 316      Alive Cells 6728     Avg   17 turns/sec
+Completed Turns 351      Alive Cells 6739     Avg   17 turns/sec
+Completed Turns 386      Alive Cells 6808     Avg   17 turns/sec
+Completed Turns 423      Alive Cells 7158     Avg   17 turns/sec
+Completed Turns 461      Alive Cells 6873     Avg   18 turns/sec
+Completed Turns 499      Alive Cells 6559     Avg   18 turns/sec
+Completed Turns 500      Final Turn Complete
+File 512x512x500 output done!
+Benchmark with 1 threads took 29.07511452s
+Threads: 1, Turns: 500, Time Taken: 29.07511452s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    1
+Width      512
+Height     512
+Turns      100
+File 512x512 input done!
+Completed Turns 34       Alive Cells 6793     Avg   17 turns/sec
+Completed Turns 69       Alive Cells 6802     Avg   17 turns/sec
+Completed Turns 100      Final Turn Complete
+File 512x512x100 output done!
+Benchmark with 1 threads took 6.93332379s
+Threads: 1, Turns: 100, Time Taken: 6.93332379s
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    1
+Width      512
+Height     512
+Turns      10
+File 512x512 input done!
+Completed Turns 10       Final Turn Complete
+File 512x512x10 output done!
+Benchmark with 1 threads took 1.84281417s
+Threads: 1, Turns: 10, Time Taken: 1.84281417s
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    1
+Width      512
+Height     512
+Turns      1
+File 512x512 input done!
+Completed Turns 1        Final Turn Complete
+File 512x512x1 output done!
+Benchmark with 1 threads took 1.44010431s
+Threads: 1, Turns: 1, Time Taken: 1.44010431s
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    2
+Width      512
+Height     512
+Turns      1000
+File 512x512 input done!
+Completed Turns 52       Alive Cells 6970     Avg   26 turns/sec
+Completed Turns 105      Alive Cells 6687     Avg   26 turns/sec
+Completed Turns 157      Alive Cells 6814     Avg   26 turns/sec
+Completed Turns 208      Alive Cells 6782     Avg   26 turns/sec
+Completed Turns 260      Alive Cells 6802     Avg   25 turns/sec
+Completed Turns 313      Alive Cells 6773     Avg   26 turns/sec
+Completed Turns 366      Alive Cells 6807     Avg   26 turns/sec
+Completed Turns 420      Alive Cells 7048     Avg   26 turns/sec
+Completed Turns 461      Alive Cells 6873     Avg   24 turns/sec
+Completed Turns 510      Alive Cells 6512     Avg   24 turns/sec
+Completed Turns 562      Alive Cells 6759     Avg   23 turns/sec
+Completed Turns 616      Alive Cells 6418     Avg   25 turns/sec
+Completed Turns 670      Alive Cells 6803     Avg   26 turns/sec
+Completed Turns 723      Alive Cells 6992     Avg   26 turns/sec
+Completed Turns 778      Alive Cells 6830     Avg   27 turns/sec
+Completed Turns 832      Alive Cells 6480     Avg   27 turns/sec
+Completed Turns 886      Alive Cells 6579     Avg   27 turns/sec
+Completed Turns 940      Alive Cells 6440     Avg   27 turns/sec
+Completed Turns 996      Alive Cells 6394     Avg   27 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 512x512x1000 output done!
+Benchmark with 2 threads took 39.1879314s
+Threads: 2, Turns: 1000, Time Taken: 39.1879314s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    2
+Width      512
+Height     512
+Turns      500
+File 512x512 input done!
+Completed Turns 50       Alive Cells 6943     Avg   25 turns/sec
+Completed Turns 105      Alive Cells 6687     Avg   26 turns/sec
+Completed Turns 155      Alive Cells 6796     Avg   25 turns/sec
+Completed Turns 209      Alive Cells 6805     Avg   26 turns/sec
+Completed Turns 259      Alive Cells 6830     Avg   25 turns/sec
+Completed Turns 313      Alive Cells 6773     Avg   26 turns/sec
+Completed Turns 368      Alive Cells 6854     Avg   26 turns/sec
+Completed Turns 418      Alive Cells 7041     Avg   26 turns/sec
+Completed Turns 472      Alive Cells 6629     Avg   26 turns/sec
+Completed Turns 500      Final Turn Complete
+File 512x512x500 output done!
+Benchmark with 2 threads took 20.06166096s
+Threads: 2, Turns: 500, Time Taken: 20.06166096s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    2
+Width      512
+Height     512
+Turns      100
+File 512x512 input done!
+Completed Turns 51       Alive Cells 6919     Avg   25 turns/sec
+Completed Turns 100      Final Turn Complete
+File 512x512x100 output done!
+Benchmark with 2 threads took 4.89802734s
+Threads: 2, Turns: 100, Time Taken: 4.89802734s
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    2
+Width      512
+Height     512
+Turns      10
+File 512x512 input done!
+Completed Turns 10       Final Turn Complete
+File 512x512x10 output done!
+Benchmark with 2 threads took 1.70063766s
+Threads: 2, Turns: 10, Time Taken: 1.70063766s
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    2
+Width      512
+Height     512
+Turns      1
+File 512x512 input done!
+Completed Turns 1        Final Turn Complete
+File 512x512x1 output done!
+Benchmark with 2 threads took 1.13968467s
+Threads: 2, Turns: 1, Time Taken: 1.13968467s
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    4
+Width      512
+Height     512
+Turns      1000
+File 512x512 input done!
+Completed Turns 53       Alive Cells 6913     Avg   26 turns/sec
+Completed Turns 113      Alive Cells 6899     Avg   28 turns/sec
+Completed Turns 169      Alive Cells 6583     Avg   28 turns/sec
+Completed Turns 223      Alive Cells 6697     Avg   28 turns/sec
+Completed Turns 282      Alive Cells 6963     Avg   28 turns/sec
+Completed Turns 341      Alive Cells 6521     Avg   28 turns/sec
+Completed Turns 401      Alive Cells 7062     Avg   29 turns/sec
+Completed Turns 461      Alive Cells 6873     Avg   29 turns/sec
+Completed Turns 523      Alive Cells 6567     Avg   30 turns/sec
+Completed Turns 581      Alive Cells 6612     Avg   30 turns/sec
+Completed Turns 643      Alive Cells 6469     Avg   30 turns/sec
+Completed Turns 694      Alive Cells 6915     Avg   28 turns/sec
+Completed Turns 754      Alive Cells 6946     Avg   28 turns/sec
+Completed Turns 813      Alive Cells 6549     Avg   28 turns/sec
+Completed Turns 870      Alive Cells 6477     Avg   29 turns/sec
+Completed Turns 931      Alive Cells 6591     Avg   29 turns/sec
+Completed Turns 987      Alive Cells 6416     Avg   29 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 512x512x1000 output done!
+Benchmark with 4 threads took 35.40641301s
+Threads: 4, Turns: 1000, Time Taken: 35.40641301s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    4
+Width      512
+Height     512
+Turns      500
+File 512x512 input done!
+Completed Turns 56       Alive Cells 6935     Avg   28 turns/sec
+Completed Turns 108      Alive Cells 6821     Avg   27 turns/sec
+Completed Turns 159      Alive Cells 6805     Avg   26 turns/sec
+Completed Turns 217      Alive Cells 6823     Avg   26 turns/sec
+Completed Turns 276      Alive Cells 6973     Avg   28 turns/sec
+Completed Turns 336      Alive Cells 6447     Avg   29 turns/sec
+Completed Turns 397      Alive Cells 6977     Avg   30 turns/sec
+Completed Turns 457      Alive Cells 6948     Avg   30 turns/sec
+Completed Turns 500      Final Turn Complete
+File 512x512x500 output done!
+Benchmark with 4 threads took 18.45451512s
+Threads: 4, Turns: 500, Time Taken: 18.45451512s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    4
+Width      512
+Height     512
+Turns      100
+File 512x512 input done!
+Completed Turns 53       Alive Cells 6913     Avg   26 turns/sec
+Completed Turns 100      Final Turn Complete
+File 512x512x100 output done!
+Benchmark with 4 threads took 4.64457564s
+Threads: 4, Turns: 100, Time Taken: 4.64457564s
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    4
+Width      512
+Height     512
+Turns      10
+File 512x512 input done!
+Completed Turns 10       Final Turn Complete
+File 512x512x10 output done!
+Benchmark with 4 threads took 1.37458737s
+Threads: 4, Turns: 10, Time Taken: 1.37458737s
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    4
+Width      512
+Height     512
+Turns      1
+File 512x512 input done!
+Completed Turns 1        Final Turn Complete
+File 512x512x1 output done!
+Benchmark with 4 threads took 1.10802483s
+Threads: 4, Turns: 1, Time Taken: 1.10802483s
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    8
+Width      512
+Height     512
+Turns      1000
+File 512x512 input done!
+Completed Turns 57       Alive Cells 6872     Avg   28 turns/sec
+Completed Turns 116      Alive Cells 6926     Avg   29 turns/sec
+Completed Turns 175      Alive Cells 6796     Avg   29 turns/sec
+Completed Turns 234      Alive Cells 6678     Avg   29 turns/sec
+Completed Turns 290      Alive Cells 7118     Avg   29 turns/sec
+Completed Turns 347      Alive Cells 6725     Avg   28 turns/sec
+Completed Turns 399      Alive Cells 7035     Avg   27 turns/sec
+Completed Turns 452      Alive Cells 6712     Avg   27 turns/sec
+Completed Turns 508      Alive Cells 6546     Avg   26 turns/sec
+Completed Turns 560      Alive Cells 6798     Avg   26 turns/sec
+Completed Turns 611      Alive Cells 6347     Avg   26 turns/sec
+Completed Turns 668      Alive Cells 6707     Avg   26 turns/sec
+Completed Turns 726      Alive Cells 6824     Avg   27 turns/sec
+Completed Turns 775      Alive Cells 6859     Avg   27 turns/sec
+Completed Turns 817      Alive Cells 6539     Avg   24 turns/sec
+Completed Turns 861      Alive Cells 6488     Avg   22 turns/sec
+Completed Turns 912      Alive Cells 6673     Avg   22 turns/sec
+Completed Turns 942      Alive Cells 6484     Avg   20 turns/sec
+Completed Turns 990      Alive Cells 6430     Avg   21 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 512x512x1000 output done!
+Benchmark with 8 threads took 39.43375074s
+Threads: 8, Turns: 1000, Time Taken: 39.43375074s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    8
+Width      512
+Height     512
+Turns      500
+File 512x512 input done!
+Completed Turns 45       Alive Cells 6780     Avg   22 turns/sec
+Completed Turns 102      Alive Cells 6626     Avg   25 turns/sec
+Completed Turns 157      Alive Cells 6814     Avg   26 turns/sec
+Completed Turns 207      Alive Cells 6850     Avg   27 turns/sec
+Completed Turns 261      Alive Cells 6775     Avg   26 turns/sec
+Completed Turns 316      Alive Cells 6728     Avg   26 turns/sec
+Completed Turns 372      Alive Cells 7078     Avg   27 turns/sec
+Completed Turns 429      Alive Cells 6837     Avg   28 turns/sec
+Completed Turns 486      Alive Cells 6497     Avg   28 turns/sec
+Completed Turns 500      Final Turn Complete
+File 512x512x500 output done!
+Benchmark with 8 threads took 19.62636777s
+Completed Turns 500      Quitting
+Threads: 8, Turns: 500, Time Taken: 19.62636777s
+Démarrage du programme
+Threads    8
+Width      512
+Height     512
+Turns      100
+File 512x512 input done!
+Completed Turns 52       Alive Cells 6970     Avg   26 turns/sec
+Completed Turns 100      Final Turn Complete
+File 512x512x100 output done!
+Benchmark with 8 threads took 4.71643182s
+Threads: 8, Turns: 100, Time Taken: 4.71643182s
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    8
+Width      512
+Height     512
+Turns      10
+File 512x512 input done!
+Completed Turns 10       Final Turn Complete
+File 512x512x10 output done!
+Benchmark with 8 threads took 1.46702736s
+Threads: 8, Turns: 10, Time Taken: 1.46702736s
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    8
+Width      512
+Height     512
+Turns      1
+File 512x512 input done!
+Completed Turns 1        Final Turn Complete
+File 512x512x1 output done!
+Benchmark with 8 threads took 1.0747161s
+Threads: 8, Turns: 1, Time Taken: 1.0747161s
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    16
+Width      512
+Height     512
+Turns      1000
+File 512x512 input done!
+Completed Turns 56       Alive Cells 6935     Avg   28 turns/sec
+Completed Turns 113      Alive Cells 6899     Avg   28 turns/sec
+Completed Turns 166      Alive Cells 6688     Avg   27 turns/sec
+Completed Turns 219      Alive Cells 6655     Avg   27 turns/sec
+Completed Turns 272      Alive Cells 6894     Avg   26 turns/sec
+Completed Turns 326      Alive Cells 6571     Avg   26 turns/sec
+Completed Turns 384      Alive Cells 6841     Avg   27 turns/sec
+Completed Turns 439      Alive Cells 6865     Avg   27 turns/sec
+Completed Turns 496      Alive Cells 6615     Avg   28 turns/sec
+Completed Turns 552      Alive Cells 6512     Avg   28 turns/sec
+Completed Turns 609      Alive Cells 6357     Avg   28 turns/sec
+Completed Turns 665      Alive Cells 6725     Avg   28 turns/sec
+Completed Turns 705      Alive Cells 6884     Avg   25 turns/sec
+Completed Turns 747      Alive Cells 6909     Avg   23 turns/sec
+Completed Turns 789      Alive Cells 6748     Avg   20 turns/sec
+Completed Turns 831      Alive Cells 6506     Avg   21 turns/sec
+Completed Turns 870      Alive Cells 6477     Avg   20 turns/sec
+Completed Turns 911      Alive Cells 6582     Avg   20 turns/sec
+Completed Turns 961      Alive Cells 6426     Avg   21 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 512x512x1000 output done!
+Completed Turns 1000     Quitting
+Benchmark with 16 threads took 40.339763413s
+Threads: 16, Turns: 1000, Time Taken: 40.339763413s
+Démarrage du programme
+Threads    16
+Width      512
+Height     512
+Turns      500
+File 512x512 input done!
+Completed Turns 45       Alive Cells 6780     Avg   22 turns/sec
+Completed Turns 102      Alive Cells 6626     Avg   25 turns/sec
+Completed Turns 160      Alive Cells 6763     Avg   26 turns/sec
+Completed Turns 219      Alive Cells 6655     Avg   29 turns/sec
+Completed Turns 277      Alive Cells 6984     Avg   29 turns/sec
+Completed Turns 337      Alive Cells 6421     Avg   29 turns/sec
+Completed Turns 396      Alive Cells 7028     Avg   29 turns/sec
+Completed Turns 452      Alive Cells 6712     Avg   29 turns/sec
+Completed Turns 500      Final Turn Complete
+File 512x512x500 output done!
+Benchmark with 16 threads took 18.738516537s
+Threads: 16, Turns: 500, Time Taken: 18.738516537s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    16
+Width      512
+Height     512
+Turns      100
+File 512x512 input done!
+Completed Turns 51       Alive Cells 6919     Avg   25 turns/sec
+Completed Turns 100      Final Turn Complete
+File 512x512x100 output done!
+Benchmark with 16 threads took 4.676635024s
+Threads: 16, Turns: 100, Time Taken: 4.676635024s
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    16
+Width      512
+Height     512
+Turns      10
+File 512x512 input done!
+Completed Turns 10       Final Turn Complete
+File 512x512x10 output done!
+Benchmark with 16 threads took 1.558681419s
+Threads: 16, Turns: 10, Time Taken: 1.558681419s
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    16
+Width      512
+Height     512
+Turns      1
+File 512x512 input done!
+Completed Turns 1        Final Turn Complete
+File 512x512x1 output done!
+Benchmark with 16 threads took 1.088669192s
+Threads: 16, Turns: 1, Time Taken: 1.088669192s
+Completed Turns 1        Quitting
+Démarrage du programme
+Threads    32
+Width      512
+Height     512
+Turns      1000
+File 512x512 input done!
+Completed Turns 53       Alive Cells 6913     Avg   26 turns/sec
+Completed Turns 109      Alive Cells 6868     Avg   27 turns/sec
+Completed Turns 164      Alive Cells 6646     Avg   27 turns/sec
+Completed Turns 217      Alive Cells 6823     Avg   27 turns/sec
+Completed Turns 272      Alive Cells 6894     Avg   27 turns/sec
+Completed Turns 324      Alive Cells 6544     Avg   26 turns/sec
+Completed Turns 381      Alive Cells 7000     Avg   27 turns/sec
+Completed Turns 436      Alive Cells 6820     Avg   27 turns/sec
+Completed Turns 486      Alive Cells 6497     Avg   27 turns/sec
+Completed Turns 540      Alive Cells 6562     Avg   26 turns/sec
+Completed Turns 594      Alive Cells 6358     Avg   26 turns/sec
+Completed Turns 665      Alive Cells 6725     Avg   29 turns/sec
+Completed Turns 734      Alive Cells 6823     Avg   32 turns/sec
+Completed Turns 804      Alive Cells 6726     Avg   35 turns/sec
+Completed Turns 873      Alive Cells 6601     Avg   34 turns/sec
+Completed Turns 944      Alive Cells 6484     Avg   35 turns/sec
+Completed Turns 1000     Final Turn Complete
+File 512x512x1000 output done!
+Benchmark with 32 threads took 34.550364351s
+Threads: 32, Turns: 1000, Time Taken: 34.550364351s
+Completed Turns 1000     Quitting
+Démarrage du programme
+Threads    32
+Width      512
+Height     512
+Turns      500
+File 512x512 input done!
+Completed Turns 54       Alive Cells 6975     Avg   27 turns/sec
+Completed Turns 110      Alive Cells 6828     Avg   27 turns/sec
+Completed Turns 167      Alive Cells 6731     Avg   27 turns/sec
+Completed Turns 217      Alive Cells 6823     Avg   27 turns/sec
+Completed Turns 279      Alive Cells 6927     Avg   28 turns/sec
+Completed Turns 345      Alive Cells 6641     Avg   29 turns/sec
+Completed Turns 399      Alive Cells 7035     Avg   30 turns/sec
+Completed Turns 459      Alive Cells 6898     Avg   30 turns/sec
+Completed Turns 500      Final Turn Complete
+File 512x512x500 output done!
+Benchmark with 32 threads took 18.54244476s
+Threads: 32, Turns: 500, Time Taken: 18.54244476s
+Completed Turns 500      Quitting
+Démarrage du programme
+Threads    32
+Width      512
+Height     512
+Turns      100
+File 512x512 input done!
+Completed Turns 43       Alive Cells 6825     Avg   21 turns/sec
+Completed Turns 90       Alive Cells 6573     Avg   22 turns/sec
+Completed Turns 100      Final Turn Complete
+File 512x512x100 output done!
+Benchmark with 32 threads took 5.40579456s
+Threads: 32, Turns: 100, Time Taken: 5.40579456s
+Completed Turns 100      Quitting
+Démarrage du programme
+Threads    32
+Width      512
+Height     512
+Turns      10
+File 512x512 input done!
+Completed Turns 10       Final Turn Complete
+File 512x512x10 output done!
+Benchmark with 32 threads took 1.90779489s
+Threads: 32, Turns: 10, Time Taken: 1.90779489s
+Completed Turns 10       Quitting
+Démarrage du programme
+Threads    32
+Width      512
+Height     512
+Turns      1
+File 512x512 input done!
+Completed Turns 1        Final Turn Complete
+File 512x512x1 output done!
+Benchmark with 32 threads took 1.30970493s
+Threads: 32, Turns: 1, Time Taken: 1.30970493s
+Completed Turns 1        Quitting
