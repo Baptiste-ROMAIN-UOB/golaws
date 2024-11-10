@@ -134,7 +134,7 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 
 	// Attempt to connect to the distributed server
 	fmt.Println("[Debug] Attempting to connect to the distributed server at serverIP:8080")
-	client, err := rpc.Dial("tcp", "54.91.242.18:8080")
+	client, err := rpc.Dial("tcp", "3.82.44.229:8080")
 	var useDistributed bool
 	if err != nil {
 		fmt.Printf("Warning: Unable to connect to the distributed server: %v\nSwitching to local computation\n", err)
@@ -324,7 +324,7 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 			}
 		}
 	}
-	isShutDown = true
+	
 	
 	aliveCells = calculateAliveCells(p, world)
 	c.events <- FinalTurnComplete{turn, aliveCells}
