@@ -14,7 +14,7 @@ type distributorChannels struct {
 	ioIdle    <-chan bool
 }
 
-// 分布式任务请求
+
 type DistributedTask struct {
 	World  [][]byte
 	Params struct {
@@ -23,7 +23,7 @@ type DistributedTask struct {
 	}
 }
 
-// 创建并初始化二维字节矩阵
+
 func makeMatrix(height, width int) [][]byte {
 	matrix := make([][]byte, height)
 	for i := range matrix {
@@ -32,7 +32,6 @@ func makeMatrix(height, width int) [][]byte {
 	return matrix
 }
 
-// 计算活细胞
 func calculateAliveCells(width, height int, world [][]byte) []util.Cell {
 	var cells []util.Cell
 	for y := 0; y < height; y++ {
@@ -63,7 +62,7 @@ func calculateNeighbours(width, height int, world [][]byte, x, y int) int {
 	return neighbours
 }
 
-// 在本地计算下一个状态（当分布式计算失败时使用）
+/*
 func calculateNextState(width, height int, world [][]byte) ([][]byte, []util.Cell) {
 	newWorld := makeMatrix(height, width)
 	var flipped []util.Cell
@@ -95,7 +94,7 @@ func calculateNextState(width, height int, world [][]byte) ([][]byte, []util.Cel
 
 	return newWorld, flipped
 }
-
+*/
 // 比较新旧状态找出翻转的细胞
 func findFlippedCells(oldWorld, newWorld [][]byte, width, height int) []util.Cell {
 	var flipped []util.Cell
@@ -134,7 +133,7 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 
 	// Attempt to connect to the distributed server
 	fmt.Println("[Debug] Attempting to connect to the distributed server at serverIP:8080")
-	client, err := rpc.Dial("tcp", "54.86.158.23:8080")
+	client, err := rpc.Dial("tcp", "54.91.242.18:8080")
 	var useDistributed bool
 	if err != nil {
 		fmt.Printf("Warning: Unable to connect to the distributed server: %v\nSwitching to local computation\n", err)
@@ -209,119 +208,119 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 		}
 	}
 
-mainLoop:
-	for turn < p.Turns {
-		select {
-		case <-ticker.C:
-			if isShutDown {
-				break mainLoop
-			}
-			alive := calculateAliveCells(p.ImageWidth, p.ImageHeight, world)
-			c.events <- AliveCellsCount{turn, len(alive)}
-
-		case key := <-keyPresses:
-			switch key {
-			case 'q':
-				if !isShutDown {
-					outputPGM(c, p, filename, output, world, turn)
-					c.events <- StateChange{turn, Quitting}
+	mainLoop:
+		for turn < p.Turns {
+			select {
+			case <-ticker.C:
+				if isShutDown {
 					break mainLoop
 				}
-			case 's':
-				if !isShutDown {
-					outputPGM(c, p, filename, output, world, turn)
-				}
-			case 'k':
-				handleShutdown()
-				break mainLoop
-			case 'p':
-				if !isShutDown {
-					c.events <- StateChange{turn, Paused}
-					fmt.Printf("[Paused] Current turn: %d\n", turn)
-					for {
-						key = <-keyPresses
-						if key == 'p' {
-							c.events <- StateChange{turn, Executing}
-							fmt.Println("[Continuing]")
-							break
-						} else if key == 'q' {
-							outputPGM(c, p, filename, output, world, turn)
-							c.events <- StateChange{turn, Quitting}
-							break mainLoop
-						} else if key == 'k' {
-							handleShutdown()
-							break mainLoop
-						} else if key == 's' {
-							outputPGM(c, p, filename, output, world, turn)
+				alive := calculateAliveCells(p.ImageWidth, p.ImageHeight, world)
+				c.events <- AliveCellsCount{turn, len(alive)}
+
+			case key := <-keyPresses:
+				switch key {
+				case 'q':
+					if !isShutDown {
+						outputPGM(c, p, filename, output, world, turn)
+						c.events <- StateChange{turn, Quitting}
+						break mainLoop
+					}
+				case 's':
+					if !isShutDown {
+						outputPGM(c, p, filename, output, world, turn)
+					}
+				case 'k':
+					handleShutdown()
+					break mainLoop
+				case 'p':
+					if !isShutDown {
+						c.events <- StateChange{turn, Paused}
+						fmt.Printf("[Paused] Current turn: %d\n", turn)
+						for {
+							key = <-keyPresses
+							if key == 'p' {
+								c.events <- StateChange{turn, Executing}
+								fmt.Println("[Continuing]")
+								break
+							} else if key == 'q' {
+								outputPGM(c, p, filename, output, world, turn)
+								c.events <- StateChange{turn, Quitting}
+								break mainLoop
+							} else if key == 'k' {
+								handleShutdown()
+								break mainLoop
+							} else if key == 's' {
+								outputPGM(c, p, filename, output, world, turn)
+							}
 						}
 					}
 				}
-			}
 
-		default:
-			if !isShutDown {
-				var newWorld [][]byte
-				var flipped []util.Cell
+			default:
+				if !isShutDown {
+					var newWorld [][]byte
+					var flipped []util.Cell
 
-				if useDistributed {
-					task := DistributedTask{
-						World: world,
-						Params: struct {
-							Width  int
-							Height int
-						}{
-							Width:  p.ImageWidth,
-							Height: p.ImageHeight,
-						},
-					}
+					if useDistributed {
+						task := DistributedTask{
+							World: world,
+							Params: struct {
+								Width  int
+								Height int
+							}{
+								Width:  p.ImageWidth,
+								Height: p.ImageHeight,
+							},
+						}
 
-					fmt.Printf("[Debug] Sending distributed computation request for %dx%d grid, turn %d\n",
-						p.ImageWidth, p.ImageHeight, turn)
+						fmt.Printf("[Debug] Sending distributed computation request for %dx%d grid, turn %d\n",
+							p.ImageWidth, p.ImageHeight, turn)
 
-					var response [][]byte
-					err := client.Call("Engine.State", task, &response)
-					if err != nil {
-						fmt.Printf("[Error] Distributed computation failed: %v\nSwitching to local computation\n", err)
-						useDistributed = false
-						newWorld, flipped = calculateNextState(p.ImageWidth, p.ImageHeight, world)
-					} else {
-						fmt.Printf("[Debug] Distributed computation succeeded, turn %d\n", turn)
-						if response == nil {
-							fmt.Println("[Error] Server returned nil result")
+						var response [][]byte
+						err := client.Call("Engine.State", task, &response)
+						if err != nil {
+							fmt.Printf("[Error] Distributed computation failed: %v\nSwitching to local computation\n", err)
 							useDistributed = false
 							newWorld, flipped = calculateNextState(p.ImageWidth, p.ImageHeight, world)
 						} else {
-							newWorld = response
-							flipped = findFlippedCells(world, newWorld, p.ImageWidth, p.ImageHeight)
-							fmt.Printf("[Debug] Calculation complete, %d cells flipped\n", len(flipped))
+							fmt.Printf("[Debug] Distributed computation succeeded, turn %d\n", turn)
+							if response == nil {
+								fmt.Println("[Error] Server returned nil result")
+								useDistributed = false
+								newWorld, flipped = calculateNextState(p.ImageWidth, p.ImageHeight, world)
+							} else {
+								newWorld = response
+								flipped = findFlippedCells(world, newWorld, p.ImageWidth, p.ImageHeight)
+								fmt.Printf("[Debug] Calculation complete, %d cells flipped\n", len(flipped))
+							}
 						}
+					} else {
+						// Use local computation
+						newWorld, flipped = calculateNextState(p.ImageWidth, p.ImageHeight, world)
 					}
-				} else {
-					// Use local computation
-					newWorld, flipped = calculateNextState(p.ImageWidth, p.ImageHeight, world)
-				}
 
-				// Send cell flipped events
-				for _, cell := range flipped {
-					c.events <- CellFlipped{turn, cell}
-				}
+					// Send cell flipped events
+					for _, cell := range flipped {
+						c.events <- CellFlipped{turn, cell}
+					}
 
-				// Update world state
-				world = newWorld
-				c.events <- TurnComplete{turn}
-				turn++
+					// Update world state
+					world = newWorld
+					c.events <- TurnComplete{turn}
+					turn++
+				}
 			}
 		}
-	}
 
-	// Only send final state if not already shut down
-	if !isShutDown {
-		alive = calculateAliveCells(p.ImageWidth, p.ImageHeight, world)
-		c.events <- FinalTurnComplete{turn, alive}
-		outputPGM(c, p, filename, output, world, turn)
-	}
+		// Only send final state if not already shut down
+		if !isShutDown {
+			alive = calculateAliveCells(p.ImageWidth, p.ImageHeight, world)
+			c.events <- FinalTurnComplete{turn, alive}
+			outputPGM(c, p, filename, output, world, turn)
+		}
 
-	// Ensure all I/O operations are complete
-	c.ioCommand <- ioCheckIdle
-	<-c.ioIdle
-}
+		// Ensure all I/O operations are complete
+		c.ioCommand <- ioCheckIdle
+		<-c.ioIdle
+	}
