@@ -1,236 +1,132 @@
 package main
 
 import (
-    "fmt"
-    "log"
-    "net"
-    "net/rpc"
-    "sync"
-    //"time"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net"
+	"sync"
 )
-
-// Structure pour représenter un worker
-type Worker struct {
-    Client *rpc.Client
-}
-
-var (
-    workers     = make([]*Worker, 0) // Liste des workers
-    workerMutex sync.Mutex           // Mutex pour garantir un accès sécurisé aux workers
-)
-
-type SegmentRequest struct {
-    Start  int
-    End    int
-    World  [][]byte
-    Params Params
-}
-
-type SegmentResponse struct {
-    NewSegment [][]byte
-}
 
 type Params struct {
-    Width  int
-    Height int
+	ImageWidth  int `json:"imageWidth"`
+	ImageHeight int `json:"imageHeight"`
+	Threads     int `json:"threads"`
+	Turns       int `json:"turns"`
 }
 
-type Engine struct{}
-
-// Fonction pour attribuer un travail à un worker disponible
-func getAvailableWorker() (*Worker, error) {
-    workerMutex.Lock()
-    defer workerMutex.Unlock()
-
-    // Cherche un worker qui est enregistré
-    if len(workers) > 0 {
-        return workers[0], nil
-    }
-    return nil, fmt.Errorf("Aucun worker disponible")
+func calculateNextState(start, end int, p Params, world [][]byte) [][]byte {
+	// Implémentation simplifiée de calculateNextState
+	newWorld := make([][]byte, p.ImageHeight)
+	for i := range newWorld {
+		newWorld[i] = make([]byte, p.ImageWidth)
+	}
+	for y := 0; y < p.ImageHeight; y++ {
+		for x := start; x < end; x++ {
+			// Simuler une modification de l'état des cellules
+			newWorld[y][x] = world[y][x] ^ 255
+		}
+	}
+	return newWorld
 }
 
-// Fonction qui calcule l'état suivant du tableau sur un worker
-func (e *Engine) State(req SegmentRequest, res *SegmentResponse) error {
-    // Obtention d'un worker disponible
-    worker, err := getAvailableWorker()
-    if err != nil {
-        return fmt.Errorf("Erreur lors de l'obtention d'un worker : %v", err)
-    }
-
-    // Envoi de la requête de calcul au worker
-    err = worker.Client.Call("Worker.State", req, res)
-    if err != nil {
-        return fmt.Errorf("Erreur lors de l'appel RPC au worker : %v", err)
-    }
-
-    return nil
+func worker(start, end int, p Params, world [][]byte) [][]byte {
+	return calculateNextState(start, end, p, world)
 }
 
-// Nouvelle méthode CalculateNextState
-func (e *Engine) CalculateNextState(req SegmentRequest, res *[][]byte) error {
-    numWorkers := len(workers)
-    if numWorkers == 0 {
-        return fmt.Errorf("Aucun worker disponible pour calculer l'état suivant")
-    }
+// Fonction pour gérer les connexions TCP
+func handleConnection(conn net.Conn) {
+	defer conn.Close()
+	log.Println("Nouvelle connexion établie.")
 
-    // Découper la grille en segments
-    segmentHeight := req.Params.Height / numWorkers
-    responses := make([]*SegmentResponse, numWorkers)
-    var wg sync.WaitGroup
-    wg.Add(numWorkers)
+	var p Params
+	decoder := json.NewDecoder(conn)
 
-    // Envoi des requêtes aux workers
-    for i := 0; i < numWorkers; i++ {
-        start := i * segmentHeight
-        end := (i + 1) * segmentHeight
-        if i == numWorkers-1 {
-            // Le dernier worker prend la fin du tableau
-            end = req.Params.Height
-        }
+	// Lire la requête envoyée par le client
+	if err := decoder.Decode(&p); err != nil {
+		log.Println("Erreur de décodage JSON:", err)
+		conn.Write([]byte("Erreur de décodage JSON"))
+		return
+	}
 
-        segmentReq := SegmentRequest{
-            Start:  start,
-            End:    end,
-            World:  req.World,
-            Params: req.Params,
-        }
+	// Créer un monde initial
+	world := make([][]byte, p.ImageHeight)
+	for i := range world {
+		world[i] = make([]byte, p.ImageWidth)
+	}
 
-        go func(i int, segmentReq SegmentRequest) {
-            defer wg.Done()
+	// Canal pour collecter les résultats des workers
+	sectionResults := make(chan [][]byte, p.Threads)
 
-            // Calculer l'état suivant pour ce segment
-            var response SegmentResponse
-            err := e.State(segmentReq, &response)
-            if err != nil {
-                log.Printf("[ERROR] Erreur lors du calcul de l'état pour le segment %d-%d: %v", segmentReq.Start, segmentReq.End, err)
-                // Si un worker échoue, on peut essayer avec un autre worker ou calculer localement
-                // Dans ce cas, on calcule localement le segment
-                e.calculateSegmentLocally(segmentReq, &response)
-            }
+	// Exécuter le worker dans des goroutines
+	var wg sync.WaitGroup
+	segmentWidth := p.ImageWidth / p.Threads
+	for i := 0; i < p.Threads; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			start := i * segmentWidth
+			end := (i + 1) * segmentWidth
+			if i == p.Threads-1 {
+				end = p.ImageWidth // Dernier segment pour couvrir toute la largeur
+			}
+			// Appeler le worker
+			newWorld := worker(start, end, p, world)
+			sectionResults <- newWorld
+		}(i)
+	}
 
-            responses[i] = &response
-        }(i, segmentReq)
-    }
+	// Attendre que tous les workers aient terminé
+	wg.Wait()
+	close(sectionResults)
 
-    // Attendre que tous les workers aient terminé
-    wg.Wait()
+	// Fusionner les résultats des workers
+	finalWorld := make([][]byte, p.ImageHeight)
+	for i := 0; i < p.ImageHeight; i++ {
+		finalWorld[i] = make([]byte, p.ImageWidth)
+	}
+	for i := 0; i < p.Threads; i++ {
+		newWorld := <-sectionResults
+		start := i * segmentWidth
+		end := (i + 1) * segmentWidth
+		if i == p.Threads-1 {
+			end = p.ImageWidth
+		}
+		for y := 0; y < p.ImageHeight; y++ {
+			for x := start; x < end; x++ {
+				finalWorld[y][x] = newWorld[y][x]
+			}
+		}
+	}
 
-    // Combiner les résultats des workers
-    // Construire la grille complète en combinant les segments calculés
-    result := make([][]byte, req.Params.Height)
-    for i := 0; i < numWorkers; i++ {
-        start := i * segmentHeight
-        end := (i + 1) * segmentHeight
-        if i == numWorkers-1 {
-            end = req.Params.Height
-        }
-        copy(result[start:end], responses[i].NewSegment)
-    }
-
-    *res = result
-    return nil
-}
-
-// Fonction pour calculer un segment localement si aucun worker ne répond
-func (e *Engine) calculateSegmentLocally(req SegmentRequest, res *SegmentResponse) {
-    fmt.Printf("[DEBUG] Calcul local pour le segment [%d-%d]\n", req.Start, req.End)
-    newSegment := make([][]byte, req.End-req.Start)
-    for i := range newSegment {
-        newSegment[i] = make([]byte, req.Params.Width)
-    }
-
-    // Calcul de l'état suivant pour chaque cellule du segment
-    for y := req.Start; y < req.End; y++ {
-        for x := 0; x < req.Params.Width; x++ {
-            aliveNeighbors := countAliveNeighbors(req.World, x, y)
-            if req.World[y][x] == 255 {
-                if aliveNeighbors == 2 || aliveNeighbors == 3 {
-                    newSegment[y-req.Start][x] = 255
-                } else {
-                    newSegment[y-req.Start][x] = 0
-                }
-            } else {
-                if aliveNeighbors == 3 {
-                    newSegment[y-req.Start][x] = 255
-                } else {
-                    newSegment[y-req.Start][x] = 0
-                }
-            }
-        }
-    }
-
-    res.NewSegment = newSegment
-}
-
-// Fonction pour compter les voisins vivants autour d’une cellule
-func countAliveNeighbors(world [][]byte, x, y int) int {
-    aliveCount := 0
-    directions := []struct{ dx, dy int }{
-        {-1, -1}, {-1, 0}, {-1, 1},
-        {0, -1}, {0, 1},
-        {1, -1}, {1, 0}, {1, 1},
-    }
-
-    for _, dir := range directions {
-        neighborX := (x + dir.dx + len(world[0])) % len(world[0])
-        neighborY := (y + dir.dy + len(world)) % len(world)
-        if world[neighborY][neighborX] == 255 {
-            aliveCount++
-        }
-    }
-    return aliveCount
-}
-
-// Fonction pour enregistrer un worker auprès du serveur
-func (e *Engine) RegisterWorker(workerAddr string, success *bool) error {
-    worker := &Worker{
-        Client: nil,
-    }
-
-    // Tentative de connexion au worker
-    client, err := rpc.Dial("tcp", workerAddr)
-    if err != nil {
-        return fmt.Errorf("Erreur de connexion au worker : %v", err)
-    }
-
-    worker.Client = client
-
-    // Enregistrer le worker
-    workerMutex.Lock()
-    workers = append(workers, worker)
-    workerMutex.Unlock()
-
-    *success = true
-    fmt.Printf("[DEBUG] Worker enregistré : %s\n", workerAddr)
-    return nil
-}
-
-// Démarrer le serveur RPC
-func startServer() {
-    engine := new(Engine)
-    rpc.Register(engine)
-
-    // Démarrage du serveur
-    fmt.Println("[DEBUG] Démarrage du serveur RPC sur le port 8080")
-
-    listener, err := net.Listen("tcp", ":8080")
-    if err != nil {
-        log.Fatalf("Erreur lors du démarrage du serveur : %v", err)
-    }
-    defer listener.Close()
-
-    for {
-        conn, err := listener.Accept()
-        if err != nil {
-            log.Println("Erreur lors de l'acceptation de connexion : ", err)
-            continue
-        }
-        fmt.Printf("[DEBUG] Connexion acceptée depuis : %v\n", conn.RemoteAddr())
-        go rpc.ServeConn(conn)
-    }
+	// Répondre au client avec l'état final du monde
+	encoder := json.NewEncoder(conn)
+	if err := encoder.Encode(finalWorld); err != nil {
+		log.Println("Erreur d'encodage de la réponse:", err)
+		conn.Write([]byte("Erreur d'encodage de la réponse"))
+		return
+	}
+	log.Println("Réponse envoyée au client.")
 }
 
 func main() {
-    // Démarrer le serveur
-    startServer()
+	// Créer un écouteur TCP
+	listener, err := net.Listen("tcp", ":8080")
+	if err != nil {
+		log.Fatal("Erreur d'écoute TCP:", err)
+	}
+	defer listener.Close()
+
+	fmt.Println("Serveur TCP en écoute sur le port 8080...")
+
+	// Accepter les connexions entrantes
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			log.Println("Erreur de connexion:", err)
+			continue
+		}
+		// Gérer la connexion dans une goroutine
+		go handleConnection(conn)
+	}
 }
