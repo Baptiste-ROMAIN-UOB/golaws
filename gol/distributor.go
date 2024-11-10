@@ -32,16 +32,17 @@ func makeMatrix(height, width int) [][]byte {
 	return matrix
 }
 
-func calculateAliveCells(width, height int, world [][]byte) []util.Cell {
-	var cells []util.Cell
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
+func calculateAliveCells(p Params, world [][]byte) []util.Cell {
+	aliveCells := []util.Cell{}
+
+	for y := 0; y < p.ImageHeight; y++ {
+		for x := 0; x < p.ImageWidth; x++ {
 			if world[y][x] == 255 {
-				cells = append(cells, util.Cell{X: x, Y: y})
+				aliveCells = append(aliveCells, util.Cell{X: x, Y: y})
 			}
 		}
 	}
-	return cells
+	return aliveCells
 }
 
 
@@ -164,31 +165,39 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 		}
 	}
 
-	// Create and initialize the world
+
+
+
 	world := makeMatrix(p.ImageHeight, p.ImageWidth)
 
-	// Read the initial state
 	c.ioCommand <- ioInput
-	filename <- fmt.Sprintf("%dx%d", p.ImageHeight, p.ImageWidth)
-
-	// Read the initial world and report live cells
+	myfile := fmt.Sprintf("%dx%d", p.ImageHeight, p.ImageWidth)
+	filename <- myfile
 	for y := 0; y < p.ImageHeight; y++ {
 		for x := 0; x < p.ImageWidth; x++ {
 			world[y][x] = <-input
-			if world[y][x] == 255 {
-				c.events <- CellFlipped{0, util.Cell{X: x, Y: y}}
-			}
 		}
 	}
 
-	// Main game loop
+	// For all initially alive cells send a CellFlipped Event.
 	turn := 0
+	aliveCells := calculateAliveCells(p, world)
+	for i := range aliveCells {
+		var CellFlipped = CellFlipped{
+			CompletedTurns: turn,
+			Cell: util.Cell{
+				X: aliveCells[i].X,
+				Y: aliveCells[i].Y,
+			},
+		}
+		c.events <- CellFlipped
+	}
+
+
+	
+	// Main ga
 	ticker := time.NewTicker(2 * time.Second)
 	defer ticker.Stop()
-
-	alive := calculateAliveCells(p.ImageWidth, p.ImageHeight, world)
-	c.events <- AliveCellsCount{turn, len(alive)}
-
 	handleShutdown := func() {
 		if !isShutDown {
 			fmt.Println("[Debug] Initiating shutdown sequence")
@@ -197,8 +206,8 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 			shutDownDistributedComponents()
 
 			// Send final state before shutting down
-			alive = calculateAliveCells(p.ImageWidth, p.ImageHeight, world)
-			c.events <- FinalTurnComplete{turn, alive}
+			aliveCells = calculateAliveCells(p, world)
+			c.events <- FinalTurnComplete{turn, aliveCells}
 
 			// Ensure all I/O operations are complete
 			c.ioCommand <- ioCheckIdle
@@ -215,7 +224,7 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 				if isShutDown {
 					break mainLoop
 				}
-				alive := calculateAliveCells(p.ImageWidth, p.ImageHeight, world)
+				alive := calculateAliveCells(p, world)
 				c.events <- AliveCellsCount{turn, len(alive)}
 
 			case key := <-keyPresses:
@@ -315,8 +324,8 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 
 		// Only send final state if not already shut down
 		if !isShutDown {
-			alive = calculateAliveCells(p.ImageWidth, p.ImageHeight, world)
-			c.events <- FinalTurnComplete{turn, alive}
+			aliveCells = calculateAliveCells(p, world)
+			c.events <- FinalTurnComplete{turn, aliveCells}
 			outputPGM(c, p, filename, output, world, turn)
 		}
 

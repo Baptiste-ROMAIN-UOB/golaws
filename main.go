@@ -53,32 +53,32 @@ func setupSignalHandler(keyPresses chan<- rune) {
 
 	// 开启一个 goroutine 来处理信号
 	go func() {
-		once.Do(func() { // 确保以下代码只执行一次
-			<-sigterm         // 等待信号传入
-			keyPresses <- 'q' // 捕捉到信号时，向 keyPresses 通道发送 'q'，表示退出
+		once.Do(func() { 
+			<-sigterm       
+			keyPresses <- 'q' 
 		})
 	}()
 }
 
-// 主函数，程序入口
+
 func main() {
-	fmt.Println("程序启动")            // 打印启动信息
-	runtime.LockOSThread()         // 锁定主线程，防止操作系统在多线程下自动切换线程
-	defer runtime.UnlockOSThread() // 确保程序退出时解锁线程
+	fmt.Println("程序启动")            
+	runtime.LockOSThread()        
+	defer runtime.UnlockOSThread() 
 
-	params, headless := parseFlags() // 解析命令行参数，获得游戏参数和无窗口模式标志
+	params, headless := parseFlags() 
 
-	keyPresses := make(chan rune, 10)    // 创建一个通道，用于处理键盘输入事件
-	events := make(chan gol.Event, 1000) // 创建一个通道，用于处理游戏事件
+	keyPresses := make(chan rune, 10)    
+	events := make(chan gol.Event, 1000) 
 
-	setupSignalHandler(keyPresses) // 设置信号处理器，处理系统信号
+	setupSignalHandler(keyPresses)
 
-	go gol.Run(params, events, keyPresses) // 启动游戏逻辑，使用 goroutine 运行游戏
+	go gol.Run(params, events, keyPresses) 
 
-	// 根据是否为无窗口模式，选择启动 SDL 图形界面或无窗口模式
+
 	if headless {
-		sdl.RunHeadless(events) // 如果是无窗口模式，则运行无窗口版本的 SDL
+		sdl.RunHeadless(events) 
 	} else {
-		sdl.Run(params, events, keyPresses) // 否则运行有图形界面的 SDL
+		sdl.Run(params, events, keyPresses) 
 	}
 }
