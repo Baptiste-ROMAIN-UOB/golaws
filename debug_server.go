@@ -1,3 +1,4 @@
+// server.go
 package main
 
 import (
@@ -8,82 +9,85 @@ import (
 	"sync"
 )
 
-// Worker struct to hold the RPC client connection for each worker node
+// Worker结构体定义
 type Worker struct {
 	Client *rpc.Client
 }
 
 var (
-	workers            = make([]*Worker, 0) // List of connected workers
-	workerMutex        sync.Mutex           // Mutex for safe access to workers list
-	currentWorkerIndex int                  // Index for round-robin task distribution
+	workers            = make([]*Worker, 0) // worker列表
+	workerMutex        sync.Mutex           // worker访问互斥锁
+	currentWorkerIndex int                  // 用于轮询的索引
 )
 
-// Params defines the grid dimensions for the Game of Life
+// 游戏参数结构体
 type Params struct {
-	Width  int // Grid width
-	Height int // Grid height
+	Width  int
+	Height int
 }
 
-// SegmentRequest represents a request for processing a segment of the grid
+// 段计算请求结构体
 type SegmentRequest struct {
-	Start  int      // Starting row of the segment
-	End    int      // Ending row of the segment
-	World  [][]byte // Grid data for the segment
-	Params Params   // Grid dimensions
+	Start  int
+	End    int
+	World  [][]byte
+	Params Params
 }
 
-// SegmentResponse holds the processed data of a grid segment
+// 段计算响应结构体
 type SegmentResponse struct {
-	NewSegment [][]byte // Processed segment of the grid
+	NewSegment [][]byte
 }
 
-// DistributedTask represents the complete grid task with parameters
+// 分布式任务请求
 type DistributedTask struct {
 	World  [][]byte
 	Params struct {
-		Width  int // Grid width
-		Height int // Grid height
+		Width  int
+		Height int
 	}
 }
 
-// Engine struct for managing distributed tasks
+// 引擎结构体
 type Engine struct{}
 
-// getAvailableWorker selects an available worker in a round-robin manner
+// 获取可用worker
 func getAvailableWorker() (*Worker, error) {
 	workerMutex.Lock()
 	defer workerMutex.Unlock()
 
 	numWorkers := len(workers)
 	if numWorkers == 0 {
-		return nil, fmt.Errorf("no available worker")
+		return nil, fmt.Errorf("没有可用的worker")
 	}
 
-	// Select worker using round-robin
+	// 使用轮询方式选择worker
 	worker := workers[currentWorkerIndex]
 	currentWorkerIndex = (currentWorkerIndex + 1) % numWorkers
 
-	fmt.Printf("[DEBUG] Selected worker %d of %d\n", currentWorkerIndex, numWorkers)
+	fmt.Printf("[调试] 选择worker %d / %d\n", currentWorkerIndex, numWorkers)
 	return worker, nil
 }
 
-// State processes the grid by dividing it into segments and assigning them to workers
+// 计算单个段的状态
 func (e *Engine) State(req DistributedTask, res *[][]byte) error {
-	fmt.Printf("[DEBUG] Server received computation request: grid size %dx%d\n", req.Params.Width, req.Params.Height)
+	fmt.Printf("[调试] Server收到计算请求：网格大小%dx%d\n",
+		req.Params.Width, req.Params.Height)
 
-	// Validate input
+	// 验证输入
 	if req.World == nil {
-		return fmt.Errorf("input world is nil")
+		return fmt.Errorf("输入世界为nil")
 	}
 
 	if len(req.World) != req.Params.Height {
-		return fmt.Errorf("world height mismatch: expected %d, got %d", req.Params.Height, len(req.World))
+		return fmt.Errorf("世界高度不匹配: 期望%d, 实际%d",
+			req.Params.Height, len(req.World))
 	}
 
 	for i, row := range req.World {
 		if len(row) != req.Params.Width {
-			return fmt.Errorf("row %d width mismatch: expected %d, got %d", i, req.Params.Width, len(row))
+			return fmt.Errorf("第%d行宽度不匹配: 期望%d, 实际%d",
+				i, req.Params.Width, len(row))
 		}
 	}
 
@@ -92,24 +96,24 @@ func (e *Engine) State(req DistributedTask, res *[][]byte) error {
 	workerMutex.Unlock()
 
 	if numWorkers == 0 {
-		return fmt.Errorf("no available worker")
+		return fmt.Errorf("没有可用的worker")
 	}
 
-	fmt.Printf("[DEBUG] Preparing to assign tasks to %d workers\n", numWorkers)
+	fmt.Printf("[调试] 准备分配任务给%d个worker处理\n", numWorkers)
 
-	// Calculate number of rows each worker should process
+	// 计算每个worker应该处理的行数
 	segmentHeight := req.Params.Height / numWorkers
 	if segmentHeight < 1 {
 		segmentHeight = 1
 	}
 
-	// Create the result grid
+	// 创建结果数组
 	*res = make([][]byte, req.Params.Height)
 	for i := range *res {
 		(*res)[i] = make([]byte, req.Params.Width)
 	}
 
-	// Channels for collecting errors and completed segments
+	// 使用channel来收集错误和完成的段
 	errChan := make(chan error, numWorkers)
 	segmentChan := make(chan struct {
 		startY  int
@@ -118,7 +122,7 @@ func (e *Engine) State(req DistributedTask, res *[][]byte) error {
 	}, numWorkers)
 
 	numSegments := 0
-	// Create segments and assign tasks
+	// 创建分段并分配工作
 	for start := 0; start < req.Params.Height; start += segmentHeight {
 		end := start + segmentHeight
 		if end > req.Params.Height {
@@ -127,7 +131,7 @@ func (e *Engine) State(req DistributedTask, res *[][]byte) error {
 		numSegments++
 
 		go func(startY, endY int) {
-			fmt.Printf("[DEBUG] Server preparing to process segment [%d-%d]\n", startY, endY)
+			fmt.Printf("[调试] Server准备处理段[%d-%d]\n", startY, endY)
 
 			segReq := SegmentRequest{
 				Start: startY,
@@ -141,21 +145,21 @@ func (e *Engine) State(req DistributedTask, res *[][]byte) error {
 
 			worker, err := getAvailableWorker()
 			if err != nil {
-				fmt.Printf("[ERROR] Failed to retrieve worker: %v\n", err)
+				fmt.Printf("[错误] 获取worker失败: %v\n", err)
 				errChan <- err
 				return
 			}
 
-			fmt.Printf("[DEBUG] Sending segment [%d-%d] to worker for processing\n", startY, endY)
+			fmt.Printf("[调试] 将段[%d-%d]发送给worker处理\n", startY, endY)
 			var response SegmentResponse
 			err = worker.Client.Call("Worker.State", segReq, &response)
 			if err != nil {
-				fmt.Printf("[ERROR] Worker failed to process segment [%d-%d]: %v\n", startY, endY, err)
+				fmt.Printf("[错误] Worker处理段[%d-%d]失败: %v\n", startY, endY, err)
 				errChan <- err
 				return
 			}
 
-			fmt.Printf("[DEBUG] Worker successfully completed segment [%d-%d]\n", startY, endY)
+			fmt.Printf("[调试] Worker成功完成段[%d-%d]的计算\n", startY, endY)
 			segmentChan <- struct {
 				startY  int
 				endY    int
@@ -165,50 +169,50 @@ func (e *Engine) State(req DistributedTask, res *[][]byte) error {
 		}(start, end)
 	}
 
-	fmt.Printf("[DEBUG] Waiting for %d segments to complete\n", numSegments)
+	fmt.Printf("[调试] 等待%d个段完成处理\n", numSegments)
 
-	// Collect results
+	// 收集结果
 	for i := 0; i < numSegments; i++ {
 		select {
 		case err := <-errChan:
-			fmt.Printf("[ERROR] Segment processing failed: %v\n", err)
+			fmt.Printf("[错误] 段处理失败: %v\n", err)
 			return err
 		case segment := <-segmentChan:
-			fmt.Printf("[DEBUG] Received computed segment [%d-%d]\n", segment.startY, segment.endY)
-			// Copy segment results to the final result
+			fmt.Printf("[调试] 接收到段[%d-%d]的计算结果\n", segment.startY, segment.endY)
+			// 复制段结果到最终结果
 			for y := segment.startY; y < segment.endY; y++ {
 				copy((*res)[y], segment.segment[y-segment.startY])
 			}
 		}
 	}
 
-	fmt.Println("[DEBUG] All segments completed, returning final result")
+	fmt.Println("[调试] 所有段计算完成，返回最终结果")
 	return nil
 }
 
-// calculateSegmentLocally processes a segment locally when no workers are available
+// 本地计算段（当worker不可用时的备选方案）
 func (e *Engine) calculateSegmentLocally(req SegmentRequest, res *SegmentResponse) {
-	fmt.Printf("[DEBUG] Processing segment [%d-%d] locally\n", req.Start, req.End)
+	fmt.Printf("[调试] 本地计算段 [%d-%d]\n", req.Start, req.End)
 
-	// Create a new segment
+	// 创建新的段
 	res.NewSegment = make([][]byte, req.End-req.Start)
 	for i := range res.NewSegment {
 		res.NewSegment[i] = make([]byte, req.Params.Width)
 	}
 
-	// Compute the next state for each cell in the segment
+	// 为每个细胞计算下一个状态
 	for y := req.Start; y < req.End; y++ {
 		for x := 0; x < req.Params.Width; x++ {
 			aliveNeighbors := countAliveNeighbors(req.World, x, y)
 			segY := y - req.Start
 
 			if req.World[y][x] == 255 {
-				// Rules for live cells
+				// 活细胞规则
 				if aliveNeighbors == 2 || aliveNeighbors == 3 {
 					res.NewSegment[segY][x] = 255
 				}
 			} else {
-				// Rules for dead cells
+				// 死细胞规则
 				if aliveNeighbors == 3 {
 					res.NewSegment[segY][x] = 255
 				}
@@ -217,7 +221,7 @@ func (e *Engine) calculateSegmentLocally(req SegmentRequest, res *SegmentRespons
 	}
 }
 
-// countAliveNeighbors calculates the number of alive neighbors around a cell
+// 计算活细胞邻居数量
 func countAliveNeighbors(world [][]byte, x, y int) int {
 	aliveCount := 0
 	height := len(world)
@@ -238,24 +242,24 @@ func countAliveNeighbors(world [][]byte, x, y int) int {
 	return aliveCount
 }
 
-// RegisterWorker registers a new worker and verifies connectivity
+// 注册worker
 func (e *Engine) RegisterWorker(workerAddr string, success *bool) error {
 	worker := &Worker{
 		Client: nil,
 	}
 
-	// Attempt to connect to the worker
+	// 尝试连接到worker
 	client, err := rpc.Dial("tcp", workerAddr)
 	if err != nil {
-		return fmt.Errorf("failed to connect to worker: %v", err)
+		return fmt.Errorf("连接worker失败: %v", err)
 	}
 
-	// Test if connection is healthy
+	// 测试连接是否正常
 	var pingRes bool
 	err = client.Call("Worker.Ping", true, &pingRes)
 	if err != nil {
 		client.Close()
-		return fmt.Errorf("Worker ping test failed: %v", err)
+		return fmt.Errorf("Worker ping测试失败: %v", err)
 	}
 
 	worker.Client = client
@@ -265,39 +269,39 @@ func (e *Engine) RegisterWorker(workerAddr string, success *bool) error {
 	workerMutex.Unlock()
 
 	*success = true
-	fmt.Printf("[DEBUG] Worker registered successfully: %s (current worker count: %d)\n", workerAddr, len(workers))
+	fmt.Printf("[调试] Worker注册成功: %s (当前worker数量: %d)\n", workerAddr, len(workers))
 	return nil
 }
 
-// startServer initializes and starts the RPC server
+// 启动RPC服务器
 func startServer() {
 	engine := new(Engine)
 	rpc.Register(engine)
 
-	fmt.Println("[DEBUG] Starting RPC server on port 8080")
-	fmt.Println("[DEBUG] Registered RPC methods:")
+	fmt.Println("[调试] 正在启动RPC服务器，端口：8080")
+	fmt.Println("[调试] 已注册的RPC方法:")
 	fmt.Println(" - Engine.State")
 	fmt.Println(" - Engine.RegisterWorker")
 
 	listener, err := net.Listen("tcp", ":8080")
 	if err != nil {
-		log.Fatalf("Failed to start server: %v", err)
+		log.Fatalf("启动服务器失败: %v", err)
 	}
 	defer listener.Close()
 
-	fmt.Println("Server started, waiting for connections...")
+	fmt.Println("服务器已启动，等待连接...")
 
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			log.Printf("Error accepting connection: %v\n", err)
+			log.Printf("接受连接时出错: %v\n", err)
 			continue
 		}
-		fmt.Printf("[DEBUG] Accepted connection from %v\n", conn.RemoteAddr())
+		fmt.Printf("[debug] 接受来自 %v 的连接\n", conn.RemoteAddr())
 		go func(c net.Conn) {
-			fmt.Printf("[DEBUG] Starting RPC session with %v\n", c.RemoteAddr())
+			fmt.Printf("[调试] 开始处理来自 %v 的RPC连接\n", c.RemoteAddr())
 			rpc.ServeConn(c)
-			fmt.Printf("[DEBUG] Ending RPC session with %v\n", c.RemoteAddr())
+			fmt.Printf("[调试] 结束处理来自 %v 的RPC连接\n", c.RemoteAddr())
 		}(conn)
 	}
 }
