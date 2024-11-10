@@ -163,8 +163,7 @@ func main() {
     serverAddr := net.JoinHostPort(serverIP, serverPort)
     workerAddr := "localhost:" + workerPort
 
-    // Démarrer le serveur RPC du worker
-    go startWorkerServer(workerPort)
+
 
     // Attendre quelques secondes pour s'assurer que le serveur est prêt
     time.Sleep(2 * time.Second)
@@ -178,4 +177,6 @@ func main() {
         fmt.Println("[DEBUG] Tentative de reconnexion dans 5 secondes...")
         time.Sleep(5 * time.Second)
     }
+       // Démarrer le serveur RPC du worker
+    go startWorkerServer(workerPort)
 }
