@@ -44,7 +44,7 @@ func calculateAliveCells(width, height int, world [][]byte) []util.Cell {
 	return cells
 }
 
-// 计算给定位置周围的活细胞数量
+
 func calculateNeighbours(width, height int, world [][]byte, x, y int) int {
 	neighbours := 0
 	for i := -1; i <= 1; i++ {
@@ -62,7 +62,7 @@ func calculateNeighbours(width, height int, world [][]byte, x, y int) int {
 	return neighbours
 }
 
-/*
+
 func calculateNextState(width, height int, world [][]byte) ([][]byte, []util.Cell) {
 	newWorld := makeMatrix(height, width)
 	var flipped []util.Cell
@@ -72,7 +72,7 @@ func calculateNextState(width, height int, world [][]byte) ([][]byte, []util.Cel
 			neighbours := calculateNeighbours(width, height, world, x, y)
 			wasAlive := world[y][x] == 255
 
-			// 应用生命游戏规则
+	
 			var newState byte
 			if wasAlive {
 				if neighbours == 2 || neighbours == 3 {
@@ -84,7 +84,7 @@ func calculateNextState(width, height int, world [][]byte) ([][]byte, []util.Cel
 				}
 			}
 
-			// 如果状态发生变化，记录翻转的细胞
+	
 			if (wasAlive && newState == 0) || (!wasAlive && newState == 255) {
 				flipped = append(flipped, util.Cell{X: x, Y: y})
 			}
@@ -94,8 +94,8 @@ func calculateNextState(width, height int, world [][]byte) ([][]byte, []util.Cel
 
 	return newWorld, flipped
 }
-*/
-// 比较新旧状态找出翻转的细胞
+
+
 func findFlippedCells(oldWorld, newWorld [][]byte, width, height int) []util.Cell {
 	var flipped []util.Cell
 	for y := 0; y < height; y++ {
