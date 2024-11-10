@@ -1,8 +1,10 @@
+---
+
 **Rapport sur l'implémentation parallèle du Jeu de la Vie**
 
 *COMS20008 - Baptiste ROMAIN - tz23682*
 
-
+---
 
 ### Implémentation Parallèle
 
@@ -43,8 +45,5 @@ Les fonctions auxiliaires sont utilisées pour éviter les répétitions de code
 ### Conclusion
 
 En conclusion, cette implémentation parallèle du Jeu de la Vie en Go permet d'exécuter le programme de manière plus efficace en répartissant le travail entre plusieurs goroutines. Cependant, la performance de cette parallélisation dépend fortement des ressources matérielles disponibles et du nombre de threads utilisés. Lorsque le nombre de threads dépasse la capacité du processeur, l'efficacité commence à stagner, ce qui limite les gains possibles. 
+---
 
-
-### CSA Coursework: Game of Life skeleton (Go)
-
-All documentation is available [here](https://uob-csa.github.io/gol-docs/)
