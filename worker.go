@@ -108,7 +108,6 @@ func countAliveCells(segment [][]byte) int {
 
 // Fonction pour s’enregistrer auprès du serveur
 func registerWithServer(serverAddr string, workerAddr string) error {
-    // Débogage : tentative d'enregistrement du worker
     fmt.Printf("[DEBUG] Tentative d'enregistrement du worker à l'adresse %s\n", workerAddr)
 
     client, err := rpc.Dial("tcp", serverAddr)
@@ -123,7 +122,6 @@ func registerWithServer(serverAddr string, workerAddr string) error {
         return fmt.Errorf("Erreur d'enregistrement du worker : %v", err)
     }
 
-    // Débogage : confirmation de l'enregistrement
     fmt.Println("[DEBUG] Worker enregistré avec succès :", workerAddr)
     return nil
 }
@@ -131,9 +129,8 @@ func registerWithServer(serverAddr string, workerAddr string) error {
 // Fonction pour démarrer le listener RPC du worker
 func startWorkerServer(port string) {
     worker := new(Worker)
-    rpc.RegisterName("Worker", worker) // Enregistrement explicite du service Worker
+    rpc.RegisterName("Worker", worker)
 
-    // Débogage : démarrage du serveur RPC
     fmt.Printf("[DEBUG] Démarrage du serveur RPC du worker sur le port %s\n", port)
 
     listener, err := net.Listen("tcp", ":"+port)
@@ -149,7 +146,6 @@ func startWorkerServer(port string) {
             log.Println("Erreur lors de l'acceptation de connexion : ", err)
             continue
         }
-        // Débogage : nouvelle connexion acceptée
         fmt.Printf("[DEBUG] Connexion acceptée depuis : %v\n", conn.RemoteAddr())
         go rpc.ServeConn(conn)
     }
@@ -160,13 +156,18 @@ func main() {
         fmt.Println("Usage: go run worker.go <workerPort> <serverIP>")
         os.Exit(1)
     }
-    workerPort := os.Args[1] // Port du worker
-    serverIP := os.Args[2]   // Adresse du serveur
+    workerPort := os.Args[1]
+    serverIP := os.Args[2]
 
-    // On suppose que le serveur écoute sur le port 8080
     serverPort := "8080"
     serverAddr := net.JoinHostPort(serverIP, serverPort)
     workerAddr := "localhost:" + workerPort
+
+    // Démarrer le serveur RPC du worker
+    go startWorkerServer(workerPort)
+
+    // Attendre quelques secondes pour s'assurer que le serveur est prêt
+    time.Sleep(2 * time.Second)
 
     // Essayer de s’enregistrer auprès du serveur
     for {
@@ -174,11 +175,7 @@ func main() {
         if err == nil {
             break
         }
-        // Débogage : attendre avant de réessayer l'enregistrement
         fmt.Println("[DEBUG] Tentative de reconnexion dans 5 secondes...")
         time.Sleep(5 * time.Second)
     }
-
-    // Démarrer le serveur RPC du worker
-    startWorkerServer(workerPort)
 }
