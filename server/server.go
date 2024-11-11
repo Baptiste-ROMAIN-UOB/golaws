@@ -6,88 +6,151 @@ import (
 	"net"
 	"net/rpc"
 	"sync"
+	"time"
 )
 
-// Worker structure definition
+// Worker struct holds worker details, including RPC client, address, and current load.
 type Worker struct {
 	Client *rpc.Client
+	Addr   string
+	Load   int
 }
 
 var (
-	workers            = make([]*Worker, 0) // list of workers
-	workerMutex        sync.Mutex           // mutex for worker access
-	currentWorkerIndex int                  // index for round-robin selection
+	workers     = make([]*Worker, 0) // Worker pool to manage registered workers.
+	workerMutex sync.Mutex           // Mutex to synchronize access to the worker pool.
 )
 
-// Game parameters structure
+// Params defines the game parameters like grid dimensions.
 type Params struct {
 	Width  int
 	Height int
 }
 
-// Segment calculation request structure
+// SegmentRequest represents a request for segment calculation.
 type SegmentRequest struct {
-	Start  int
-	End    int
-	World  [][]byte
-	Params Params
+	Start  int      // Starting Y-coordinate of the segment.
+	End    int      // Ending Y-coordinate of the segment.
+	World  [][]byte // The world grid data.
+	Params Params   // Parameters including grid dimensions.
 }
 
-// Segment calculation response structure
+// SegmentResponse represents the response after segment calculation.
 type SegmentResponse struct {
-	NewSegment [][]byte
+	NewSegment [][]byte // The calculated new segment data.
 }
 
-// Distributed task request
+// DistributedTask contains the world grid and parameters to be distributed to workers.
 type DistributedTask struct {
-	World  [][]byte
-	Params struct {
-		Width  int
-		Height int
-	}
+	World  [][]byte // The world grid data.
+	Params Params   // Parameters including grid dimensions.
 }
 
-// Engine structure
+// Engine is the main struct that handles incoming RPC calls.
 type Engine struct{}
 
-// Get an available worker
+// getAvailableWorker selects the worker with the lowest load.
 func getAvailableWorker() (*Worker, error) {
 	workerMutex.Lock()
 	defer workerMutex.Unlock()
 
-	numWorkers := len(workers)
-	if numWorkers == 0 {
-		return nil, fmt.Errorf("no available worker")
+	if len(workers) == 0 {
+		return nil, fmt.Errorf("No available workers")
 	}
 
-	// Select worker
-	worker := workers[currentWorkerIndex]
-	currentWorkerIndex = (currentWorkerIndex + 1) % numWorkers
-	// if you want to check how server is working get rid of the comments (//)
-	//fmt.Printf("[System] Selected worker %d / %d\n", currentWorkerIndex, numWorkers)
-	return worker, nil
+	// Find the worker with the minimum load.
+	selectedWorker := workers[0]
+	for _, worker := range workers {
+		if worker.Load < selectedWorker.Load {
+			selectedWorker = worker
+		}
+	}
+	selectedWorker.Load++
+	log.Printf("[INFO] Selected worker at %s with current load %d", selectedWorker.Addr, selectedWorker.Load)
+	return selectedWorker, nil
 }
 
-// Calculate the state of a single segment
-func (e *Engine) State(req DistributedTask, res *[][]byte) error {
-	fmt.Printf("[System] Server received calculation request: grid size %dx%d\n",
-		req.Params.Width, req.Params.Height)
+// releaseWorkerLoad decreases the load of a worker after task completion.
+func releaseWorkerLoad(worker *Worker) {
+	workerMutex.Lock()
+	worker.Load--
+	workerMutex.Unlock()
+	log.Printf("[INFO] Worker at %s load reduced to %d", worker.Addr, worker.Load)
+}
 
-	// Input validation
-	if req.World == nil {
-		return fmt.Errorf("[Error] input world is nil")
+// distributeSegment assigns segment computation to the least-loaded worker.
+func distributeSegment(startY, endY int, req DistributedTask, errChan chan<- error, segmentChan chan<- struct {
+	startY  int
+	endY    int
+	segment [][]byte
+}) {
+	worker, err := getAvailableWorker()
+	if err != nil {
+		log.Printf("[ERROR] Failed to get available worker: %v", err)
+		errChan <- err
+		return
+	}
+	defer releaseWorkerLoad(worker)
+
+	// Prepare the segment request.
+	segReq := SegmentRequest{
+		Start:  startY,
+		End:    endY,
+		World:  req.World,
+		Params: req.Params,
 	}
 
-	if len(req.World) != req.Params.Height {
-		return fmt.Errorf("[Error] world height mismatch: expected %d, got %d",
-			req.Params.Height, len(req.World))
+	var response SegmentResponse
+	// Call the worker's State method to compute the segment.
+	err = worker.Client.Call("Worker.State", segReq, &response)
+	if err != nil {
+		log.Printf("[ERROR] Worker at %s failed to process segment [%d-%d]: %v", worker.Addr, startY, endY, err)
+		errChan <- err
+		return
 	}
 
-	for i, row := range req.World {
-		if len(row) != req.Params.Width {
-			return fmt.Errorf("[Error] row %d width mismatch: expected %d, got %d",
-				i, req.Params.Width, len(row))
+	log.Printf("[INFO] Successfully processed segment [%d-%d] by worker at %s", startY, endY, worker.Addr)
+	// Send the computed segment back through the channel.
+	segmentChan <- struct {
+		startY  int
+		endY    int
+		segment [][]byte
+	}{startY, endY, response.NewSegment}
+}
+
+// collectResults collects all segment results from workers.
+func collectResults(numSegments int, res *[][]byte, errChan <-chan error, segmentChan <-chan struct {
+	startY  int
+	endY    int
+	segment [][]byte
+}) error {
+	log.Printf("[INFO] Waiting for %d segments to complete", numSegments)
+
+	for i := 0; i < numSegments; i++ {
+		select {
+		case err := <-errChan:
+			return fmt.Errorf("Segment processing failed: %v", err)
+		case segment := <-segmentChan:
+			log.Printf("[INFO] Received result for segment [%d-%d]", segment.startY, segment.endY)
+			// Merge the segment data into the result grid.
+			for y := segment.startY; y < segment.endY; y++ {
+				copy((*res)[y], segment.segment[y-segment.startY])
+			}
+		case <-time.After(10 * time.Second):
+			return fmt.Errorf("Timeout waiting for segment results")
 		}
+	}
+
+	log.Println("[INFO] All segments processed successfully")
+	return nil
+}
+
+// State calculates the new state for each segment of the world grid.
+func (e *Engine) State(req DistributedTask, res *[][]byte) error {
+	log.Printf("[INFO] Server received computation request: grid size %dx%d", req.Params.Width, req.Params.Height)
+
+	if req.World == nil {
+		return fmt.Errorf("World input is empty")
 	}
 
 	workerMutex.Lock()
@@ -95,24 +158,23 @@ func (e *Engine) State(req DistributedTask, res *[][]byte) error {
 	workerMutex.Unlock()
 
 	if numWorkers == 0 {
-		return fmt.Errorf("[Error] no available worker")
+		return fmt.Errorf("No available workers")
 	}
 
-	//fmt.Printf("[System] Preparing to assign task to %d workers\n", numWorkers)
+	log.Printf("[INFO] Preparing to distribute task to %d workers", numWorkers)
 
-	// Calculate the number of rows each worker should handle
+	// Determine the height of each segment.
 	segmentHeight := req.Params.Height / numWorkers
 	if segmentHeight < 1 {
 		segmentHeight = 1
 	}
 
-	// Create the result array
+	// Initialize the result grid.
 	*res = make([][]byte, req.Params.Height)
 	for i := range *res {
 		(*res)[i] = make([]byte, req.Params.Width)
 	}
 
-	// Use channels to collect errors and completed segments
 	errChan := make(chan error, numWorkers)
 	segmentChan := make(chan struct {
 		startY  int
@@ -121,138 +183,86 @@ func (e *Engine) State(req DistributedTask, res *[][]byte) error {
 	}, numWorkers)
 
 	numSegments := 0
-	// Create segments and assign work
+	// Distribute segments to workers.
 	for start := 0; start < req.Params.Height; start += segmentHeight {
 		end := start + segmentHeight
 		if end > req.Params.Height {
 			end = req.Params.Height
 		}
 		numSegments++
-
-		go func(startY, endY int) {
-			//fmt.Printf("[System] Server preparing to handle segment [%d-%d]\n", startY, endY)
-
-			segReq := SegmentRequest{
-				Start: startY,
-				End:   endY,
-				World: req.World,
-				Params: Params{
-					Width:  req.Params.Width,
-					Height: req.Params.Height,
-				},
-			}
-
-			worker, err := getAvailableWorker()
-			if err != nil {
-				fmt.Printf("[Error] Failed to get worker: %v\n", err)
-				errChan <- err
-				return
-			}
-
-			//fmt.Printf("[debug] Sending segment [%d-%d] to worker for processing\n", startY, endY)
-			var response SegmentResponse
-			err = worker.Client.Call("Worker.State", segReq, &response)
-			if err != nil {
-				fmt.Printf("[Error] Worker failed to process segment [%d-%d]: %v\n", startY, endY, err)
-				errChan <- err
-				return
-			}
-
-			//fmt.Printf("[debug] Worker successfully processed segment [%d-%d]\n", startY, endY)
-			segmentChan <- struct {
-				startY  int
-				endY    int
-				segment [][]byte
-			}{startY, endY, response.NewSegment}
-
-		}(start, end)
+		go distributeSegment(start, end, req, errChan, segmentChan)
 	}
 
-	//fmt.Printf("[debug] Waiting for %d segments to complete\n", numSegments)
-
-	// Collect results
-	for i := 0; i < numSegments; i++ {
-		select {
-		case err := <-errChan:
-			fmt.Printf("[Error] Segment processing failed: %v\n", err)
-			return err
-		case segment := <-segmentChan:
-			//fmt.Printf("[System] Received calculation result for segment [%d-%d]\n", segment.startY, segment.endY)
-			// Copy segment results to final result
-			for y := segment.startY; y < segment.endY; y++ {
-				copy((*res)[y], segment.segment[y-segment.startY])
-			}
-		}
-	}
-
-	//fmt.Println("[System] All segments processed, returning final result")
-	return nil
+	// Collect the results from workers.
+	return collectResults(numSegments, res, errChan, segmentChan)
 }
 
-// Register a worker
+// RegisterWorker registers a worker and adds it to the worker pool.
 func (e *Engine) RegisterWorker(workerAddr string, success *bool) error {
-	worker := &Worker{
-		Client: nil,
-	}
+	log.Printf("[INFO] Registering new worker at address: %s", workerAddr)
 
-	// Attempt to connect to the worker
+	// Connect to the worker via RPC.
 	client, err := rpc.Dial("tcp", workerAddr)
 	if err != nil {
-		return fmt.Errorf("[Error] failed to connect to worker: %v", err)
+		return fmt.Errorf("Failed to connect to worker at %s: %v", workerAddr, err)
 	}
 
-	// Test if the connection works
+	// Perform a ping test to ensure the worker is responsive.
 	var pingRes bool
 	err = client.Call("Worker.Ping", true, &pingRes)
 	if err != nil {
 		client.Close()
-		return fmt.Errorf("[Error] Worker ping test failed: %v", err)
+		return fmt.Errorf("Worker at %s failed ping test: %v", workerAddr, err)
 	}
 
-	worker.Client = client
+	worker := &Worker{
+		Client: client,
+		Addr:   workerAddr,
+		Load:   0,
+	}
 
+	// Add the worker to the worker pool.
 	workerMutex.Lock()
 	workers = append(workers, worker)
 	workerMutex.Unlock()
 
 	*success = true
-	fmt.Printf("[System] Worker registered successfully: %s (current worker count: %d)\n", workerAddr, len(workers))
+	log.Printf("[INFO] Worker at %s registered successfully. Total workers: %d", workerAddr, len(workers))
 	return nil
 }
 
-// Start the RPC server
-func startServer() {
-	engine := new(Engine)
-	rpc.Register(engine)
-
-	fmt.Println("[System] Starting RPC server, port: 8080")
-	fmt.Println("[System] Registered RPC methods:")
-	fmt.Println(" - Engine.State")
-	fmt.Println(" - Engine.RegisterWorker")
-
-	listener, err := net.Listen("tcp", ":8080")
-	if err != nil {
-		log.Fatalf("[Error] Failed to start server: %v", err)
-	}
-	defer listener.Close()
-
-	fmt.Println("[System] Server started, waiting for connections...")
-
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			log.Printf("[Error] Error accepting connection: %v\n", err)
-			continue
-		}
-		fmt.Printf("[System] Accepted connection from %v\n", conn.RemoteAddr())
-		go func(c net.Conn) {
-			fmt.Printf("[System] Starting to handle RPC connection from %v\n", c.RemoteAddr())
-			rpc.ServeConn(c)
-			fmt.Printf("[System] Finished handling RPC connection from %v\n", c.RemoteAddr())
-		}(conn)
-	}
+// handleConnection handles each incoming RPC connection.
+func handleConnection(conn net.Conn) {
+	defer conn.Close()
+	log.Printf("[INFO] Handling RPC connection from %v", conn.RemoteAddr())
+	rpc.ServeConn(conn)
+	log.Printf("[INFO] Finished handling RPC connection from %v", conn.RemoteAddr())
 }
 
 func main() {
-	startServer()
+	engine := new(Engine)
+	rpc.Register(engine)
+
+	log.Println("[INFO] Starting the Distributed Engine RPC server on port 8080")
+
+	// Listen for incoming connections on port 8080.
+	listener, err := net.Listen("tcp", ":8080")
+	if err != nil {
+		log.Fatalf("[ERROR] Failed to start the server: %v", err)
+	}
+	defer listener.Close()
+
+	log.Println("[INFO] Server is up and running, waiting for client connections...")
+
+	for {
+		// Accept an incoming connection.
+		conn, err := listener.Accept()
+		if err != nil {
+			log.Printf("[ERROR] Failed to accept a connection: %v", err)
+			continue
+		}
+		log.Printf("[INFO] New client connected from %v", conn.RemoteAddr())
+		// Handle the connection in a new goroutine.
+		go handleConnection(conn)
+	}
 }
