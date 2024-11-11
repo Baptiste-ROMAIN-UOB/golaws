@@ -14,7 +14,7 @@ import (
 
 // main is the function called when starting Game of Life with 'go run .'
 func main() {
-	fmt.Println("Démarrage du programme")
+	fmt.Println("Starting Game...")
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
