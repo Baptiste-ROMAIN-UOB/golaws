@@ -30,7 +30,9 @@ type ioChannels struct {
 // Run initiates the Game of Life processing with distributed computation.
 // p: Game parameters, events: Channel to send game events, keyPresses: Channel for key input commands,
 // engineAddress: Address of the engine for distributed computation.
-func Run(p Params, events chan<- Event, keyPresses <-chan rune, engineAddress string) {
+func Run(p Params, events chan<- Event, keyPresses <-chan rune) {
+    address := "localhost:8080"
+ 
 	// Initialize channels for I/O operations.
 	ioCommand := make(chan ioCommand)
 	ioIdle := make(chan bool)
@@ -57,9 +59,42 @@ func Run(p Params, events chan<- Event, keyPresses <-chan rune, engineAddress st
 	go startIo(p, ioChannels)
 
 	// Start the distributor which handles the main game logic, using the provided channels and parameters.
-	distributor(p, distributorChannels, ioInput, ioOutput, ioFilename, keyPresses, engineAddress)
+	distributor(p, distributorChannels, ioInput, ioOutput, ioFilename, keyPresses, address)
 }
 
+func Run_Adress(p Params, events chan<- Event, keyPresses <-chan rune, engineAddress *string) {
+    address := "localhost:8080" // Adresse par défaut
+    if engineAddress != nil {
+        address = *engineAddress
+    }
+	// Initialize channels for I/O operations.
+	ioCommand := make(chan ioCommand)
+	ioIdle := make(chan bool)
+	ioFilename := make(chan string)
+	ioOutput := make(chan uint8)
+	ioInput := make(chan uint8)
+
+	ioChannels := ioChannels{
+		command:  ioCommand,
+		idle:     ioIdle,
+		filename: ioFilename,
+		output:   ioOutput,
+		input:    ioInput,
+	}
+
+	// Channels required for the distributor's operations.
+	distributorChannels := distributorChannels{
+		events:    events,
+		ioCommand: ioCommand,
+		ioIdle:    ioIdle,
+	}
+
+	// Start the I/O goroutine with the provided parameters and channels.
+	go startIo(p, ioChannels)
+
+	// Start the distributor which handles the main game logic, using the provided channels and parameters.
+	distributor(p, distributorChannels, ioInput, ioOutput, ioFilename, keyPresses, address)
+}
 // NewParams creates a new Params instance with the specified parameters.
 // turns: Number of game turns, threads: Number of threads for computation,
 // imageWidth: Width of the game image, imageHeight: Height of the game image.

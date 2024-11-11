@@ -30,7 +30,7 @@ func main() {
 
 	headless := flag.Bool("headless", false, "Disable the SDL window for running in a headless environment.")
 	flag.StringVar(&port, "Port", "8080", "Specify the port the component will use.")
-	flag.StringVar(&engineAddress, "EngineAddress", "54.91.242.18:8080", "Specify the address of the engine.")
+	flag.StringVar(&engineAddress, "EngineAddress", "18.212.79.185:8080", "Specify the address of the engine.")
 
 	// Parse command-line flags
 	flag.Parse()
@@ -49,7 +49,7 @@ func main() {
 	go handleSigterm(keyPresses)
 
 	// Run the game logic, passing the engine address to the distributor
-	go gol.Run(params, events, keyPresses, engineAddress)
+	go gol.Run_Adress(params, events, keyPresses, &engineAddress)
 	
 	// Run SDL if not headless
 	if !(*headless) {

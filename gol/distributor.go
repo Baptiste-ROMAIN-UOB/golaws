@@ -23,7 +23,7 @@ type DistributedTask struct {
 	}
 }
 
-//create the world
+
 func makeMatrix(height, width int) [][]byte {
 	matrix := make([][]byte, height)
 	for i := range matrix {
@@ -32,7 +32,6 @@ func makeMatrix(height, width int) [][]byte {
 	return matrix
 }
 
-//get the cell alive in the world
 func calculateAliveCells(p Params, world [][]byte) []util.Cell {
 	aliveCells := []util.Cell{}
 
@@ -46,7 +45,7 @@ func calculateAliveCells(p Params, world [][]byte) []util.Cell {
 	return aliveCells
 }
 
-//this is just in case the worker does not work, cf debug_worker/server
+
 func calculateNeighbours(width, height int, world [][]byte, x, y int) int {
 	neighbours := 0
 	for i := -1; i <= 1; i++ {
@@ -64,7 +63,7 @@ func calculateNeighbours(width, height int, world [][]byte, x, y int) int {
 	return neighbours
 }
 
-//this is just in case the worker does not work, cf debug_worker/server
+
 func calculateNextState(width, height int, world [][]byte) ([][]byte, []util.Cell) {
 	newWorld := makeMatrix(height, width)
 	var flipped []util.Cell
@@ -97,6 +96,7 @@ func calculateNextState(width, height int, world [][]byte) ([][]byte, []util.Cel
 	return newWorld, flipped
 }
 
+
 func findFlippedCells(oldWorld, newWorld [][]byte, width, height int) []util.Cell {
 	var flipped []util.Cell
 	for y := 0; y < height; y++ {
@@ -109,7 +109,7 @@ func findFlippedCells(oldWorld, newWorld [][]byte, width, height int) []util.Cel
 	return flipped
 }
 
-// using the chanels give data to writePgmImage
+// Output PGM file
 func outputPGM(c distributorChannels, p Params, filename chan string, output chan<- uint8, world [][]byte, turn int) {
 	c.ioCommand <- ioOutput
 	filename <- fmt.Sprintf("%dx%dx%d", p.ImageWidth, p.ImageHeight, turn)
@@ -126,32 +126,19 @@ func shutDownDistributedComponents() {
 	fmt.Println("[System Shutdown] All distributed components have been shut down cleanly.")
 }
 
-// distributor function
+
 func distributor(p Params, c distributorChannels, input <-chan uint8, output chan<- uint8, filename chan string, keyPresses <-chan rune, engineAddress string) {
 
 	isShutDown := false
+
+	// Attempt to connect to the distributed server
+	fmt.Println("[System] Attempting to connect to the distributed server at serverIP:8080")
+	client, err := rpc.Dial("tcp", engineAddress)
 	var useDistributed bool
-	var client *rpc.Client
-
-	fmt.Printf("[System] Attempting to connect to the distributed server at %s\n", engineAddress)
-	
-	// Create a channel that will receive the result of the connection attempt
-	connectionDone := make(chan *rpc.Client, 1)
-	errorDone := make(chan error, 1)
-
-	// Start the connection attempt in a goroutine
-	go func() {
-		client, err := rpc.Dial("tcp", engineAddress)
-		if err != nil {
-			errorDone <- err
-			return
-		}
-		connectionDone <- client
-	}()
-
-	// Wait for either the connection to succeed or the timeout to occur
-	select {
-	case client := <-connectionDone:
+	if err != nil {
+		fmt.Printf("[Error] Unable to connect to the distributed server: %v\nSwitching to local computation\n", err)
+		useDistributed = false
+	} else {
 		defer client.Close()
 		useDistributed = true
 		fmt.Println("[System] Successfully connected to the distributed server")
@@ -168,27 +155,20 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 				Height: 1,
 			},
 		}
-		err := client.Call("Engine.State", testTask, &dummy)
+		err = client.Call("Engine.State", testTask, &dummy)
 		if err != nil {
 			fmt.Printf("[Error] RPC test call failed: %v\n", err)
 			useDistributed = false
 		} else {
 			fmt.Println("[System] RPC test call succeeded")
 		}
-	case err := <-errorDone:
-		// Handle connection error after timeout
-		fmt.Printf("[Error] Unable to connect to the distributed server: %v\nSwitching to local computation\n", err)
-		useDistributed = false
-	case <-time.After(10 * time.Second):
-		// Timeout after 10 seconds
-		fmt.Println("[Error] Connection attempt timed out. Switching to local computation.")
-		useDistributed = false
 	}
 
 
-	//create world
+
+
 	world := makeMatrix(p.ImageHeight, p.ImageWidth)
-	//get the world from the pgm
+
 	c.ioCommand <- ioInput
 	myfile := fmt.Sprintf("%dx%d", p.ImageHeight, p.ImageWidth)
 	filename <- myfile
@@ -214,10 +194,9 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 
 
 	
-	// The game of life turns
+	// Main ga
 	ticker := time.NewTicker(2 * time.Second)
 	defer ticker.Stop()
-	//function to handle the shutdown (k)
 	handleShutdown := func() {
 		if !isShutDown {
 			fmt.Println("[System] Initiating shutdown sequence")
@@ -236,6 +215,7 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 			isShutDown = true
 		}
 	}
+
 	for turn < p.Turns {
 		select {
 		case <-ticker.C:
@@ -246,47 +226,49 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 			c.events <- AliveCellsCount{turn, len(alive)}
 		case key := <-keyPresses:
 			switch key {
-			case 'q': //case quit (q)
+			case 'q':
 				if !isShutDown {
 					outputPGM(c, p, filename, output, world, turn)
 					c.events <- StateChange{turn, Quitting}
 					break 
 				}
-			case 's': //case save (s)
+			case 's':
 				if !isShutDown {
 					outputPGM(c, p, filename, output, world, turn)
 				}
-			case 'k': //case finish and maintain sdl windows (k)
+			case 'k':
 				handleShutdown()
 				break 
-			case 'p': //case pause (p)
+			case 'p':
 				if !isShutDown {
 					c.events <- StateChange{turn, Paused}
+					fmt.Printf("[Paused] Current turn: %d\n", turn)
 					for {
 						key = <-keyPresses
-						if key == 'p' { // unpause
+						if key == 'p' {
 							c.events <- StateChange{turn, Executing}
+							fmt.Println("[Continuing]")
 							break
-						} else if key == 'q' { // P + Q
+						} else if key == 'q' {
 							outputPGM(c, p, filename, output, world, turn)
 							c.events <- StateChange{turn, Quitting}
 							break 
-						} else if key == 'k' { // P + K
+						} else if key == 'k' {
 							handleShutdown()
 							break 
-						} else if key == 's' {// P + S
+						} else if key == 's' {
 							outputPGM(c, p, filename, output, world, turn)
 						}
 					}
 				}
 			}
 
-		default: //default case get next state
+		default:
 			if !isShutDown {
 				var newWorld [][]byte
 				var flipped []util.Cell
 
-				if useDistributed { //use server and worker, !!! you need to load server then worker before lanching the client
+				if useDistributed {
 					task := DistributedTask{
 						World: world,
 						Params: struct {
@@ -299,14 +281,16 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 					}
 					var response [][]byte
 					err := client.Call("Engine.State", task, &response)
-					if err != nil {// if computation fail then use local
+					if err != nil {
+						fmt.Printf("[Error] Distributed computation failed: %v\nSwitching to local computation\n", err)
 						useDistributed = false
 						newWorld, flipped = calculateNextState(p.ImageWidth, p.ImageHeight, world)
 					} else {
-						if response == nil { // in case the server is doing a lil trolling and is send null package :) then again go local
+						if response == nil {
+							fmt.Println("[Error] Server returned nil result")
 							useDistributed = false
 							newWorld, flipped = calculateNextState(p.ImageWidth, p.ImageHeight, world)
-						} else { // yay in this case the server and the workers are working 
+						} else {
 							newWorld = response
 							flipped = findFlippedCells(world, newWorld, p.ImageWidth, p.ImageHeight)
 						}
@@ -329,13 +313,15 @@ func distributor(p Params, c distributorChannels, input <-chan uint8, output cha
 		}
 	}
 	
-	// Finalize the simulation: send the final state, output the last PGM file, ensure all I/O operations are completed, and clean up
-	aliveCells = calculateAliveCells(p, world) 
+	
+	aliveCells = calculateAliveCells(p, world)
 	c.events <- FinalTurnComplete{turn, aliveCells}
-	outputPGM(c, p, filename, output, world, turn) 
-	c.ioCommand <- ioCheckIdle 
+	outputPGM(c, p, filename, output, world, turn)
+	
+	// Ensure all I/O operations are complete
+	c.ioCommand <- ioCheckIdle
 	<-c.ioIdle
-	c.events <- StateChange{turn, Quitting}
-	close(c.events) 
 
+	c.events <- StateChange{turn, Quitting}
+	close(c.events)
 }
