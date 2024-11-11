@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"runtime"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 
 	"uk.ac.bris.cs/gameoflife/gol"
@@ -30,16 +30,23 @@ func main() {
 
 	headless := flag.Bool("headless", false, "Disable the SDL window for running in a headless environment.")
 	flag.StringVar(&port, "Port", "8080", "Specify the port the component will use.")
-	flag.StringVar(&engineAddress, "EngineAddress", "18.212.79.185:8080", "Specify the address of the engine.")
+	flag.StringVar(&engineAddress, "EngineAddress", "", "Specify the address of the engine. Leave empty to input manually.")
 
 	// Parse command-line flags
 	flag.Parse()
+
+	// Check if engineAddress is empty, prompt the user to input it
+	if engineAddress == "" {
+		fmt.Print("Please enter the IP address of the server: ")
+		fmt.Scanln(&engineAddress)
+	}
 
 	// Print the configuration
 	fmt.Printf("%-10v %v\n", "Threads", params.Threads)
 	fmt.Printf("%-10v %v\n", "Width", params.ImageWidth)
 	fmt.Printf("%-10v %v\n", "Height", params.ImageHeight)
 	fmt.Printf("%-10v %v\n", "Turns", params.Turns)
+	fmt.Printf("%-10v %v\n", "EngineAddress", engineAddress)
 
 	// Channels for handling events and key presses
 	keyPresses := make(chan rune, 10)
@@ -50,7 +57,7 @@ func main() {
 
 	// Run the game logic, passing the engine address to the distributor
 	go gol.Run_Adress(params, events, keyPresses, &engineAddress)
-	
+
 	// Run SDL if not headless
 	if !(*headless) {
 		sdl.Run(params, events, keyPresses)
